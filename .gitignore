@@ -1,0 +1,71 @@
+# Build results
+bin/
+obj/
+out/
+artifacts/
+TestResults/
+
+# Per-project build outputs
+src/**/bin/
+src/**/obj/
+tests/**/bin/
+tests/**/obj/
+
+# NuGet packages
+**/packages/**
+!**/packages/build/**
+!**/packages/repositories.config
+*.nupkg
+*.snupkg
+.nuget/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+lcov.info
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.rsuser
+*.sln.docstates
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+
+# Rider/ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ASP.NET scaffolding
+ScaffoldingReadMe.txt
+
+# Entity Framework
+Migrations/obj/
+
+# Environment files
+.env
+.env.*
+
+# Secrets (use dotnet user-secrets instead)
+secrets.json
+
+# Local tooling
+.tools/
+
+# Node (if present for tooling or UI)
+node_modules/

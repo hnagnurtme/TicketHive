@@ -1,0 +1,6 @@
+# API project packages
+TicketHive.Api Swashbuckle.AspNetCore
+TicketHive.Api MediatR
+
+# Infrastructure project packages
+TicketHive.Infrastructure Npgsql.EntityFrameworkCore.PostgreSQL

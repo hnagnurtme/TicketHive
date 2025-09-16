@@ -1,0 +1,58 @@
+# .NET build outputs
+bin/
+obj/
+out/
+artifacts/
+TestResults/
+
+# Per-project build outputs
+src/**/bin/
+src/**/obj/
+tests/**/bin/
+tests/**/obj/
+
+# NuGet packages (keep build scripts if needed)
+**/packages/**
+!**/packages/build/**
+!**/packages/repositories.config
+
+# IDE settings
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git metadata
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Docker files (Dockerfile is handled separately by the daemon)
+.dockerignore
+docker-compose*.yml
+Dockerfile*
+
+# Logs and diagnostics
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+
+# Coverage
+coverage/
+lcov.info
+
+
