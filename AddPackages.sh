@@ -2,7 +2,8 @@
 
 # ===============================================
 # AddPackages.sh
-# Tự động đọc packages.txt và add package cho project
+# Tự động đọc Packages.txt và add package cho project
+# Hỗ trợ version và tìm project linh hoạt
 # ===============================================
 
 PACKAGE_FILE="Packages.txt"
@@ -20,21 +21,19 @@ while IFS= read -r line; do
     # Split line thành args
     args=($line)
     PROJECT=${args[0]}
-    # Lấy phần còn lại là packages + optional framework
-    PACKAGE_ARGS=("${args[@]:1}")
+    PACKAGE_NAME=${args[1]}
+    PACKAGE_VERSION=${args[2]}  # optional
 
-    # Resolve project path flexibly
+    # Resolve project path linh hoạt
     PROJECT_FILE=""
     PROJECT_DIR=""
 
     if [[ "$PROJECT" == *.csproj ]]; then
-        # Khi nhập trực tiếp đường dẫn .csproj
         if [ -f "$PROJECT" ]; then
             PROJECT_FILE="$PROJECT"
             PROJECT_DIR="$(dirname "$PROJECT")"
         fi
     else
-        # Trường hợp PROJECT là tên thư mục dự án (ví dụ: TicketHive.Api)
         if [ -f "$PROJECT/$PROJECT.csproj" ]; then
             PROJECT_FILE="$PROJECT/$PROJECT.csproj"
             PROJECT_DIR="$PROJECT"
@@ -42,7 +41,6 @@ while IFS= read -r line; do
             PROJECT_FILE="src/$PROJECT/$PROJECT.csproj"
             PROJECT_DIR="src/$PROJECT"
         else
-            # Thử tìm kiếm trong toàn repo (lần đầu trùng khớp)
             FOUND=$(find . -type f -name "$PROJECT.csproj" -print -quit)
             if [ -n "$FOUND" ]; then
                 PROJECT_FILE="$FOUND"
@@ -56,14 +54,19 @@ while IFS= read -r line; do
         continue
     fi
 
-    # Chạy dotnet add package (dùng thư mục dự án)
-    echo "Adding packages ${PACKAGE_ARGS[@]} to project $PROJECT_DIR ..."
-    dotnet add "$PROJECT_DIR" package "${PACKAGE_ARGS[@]}"
+    # Add package với version nếu có
+    if [ -n "$PACKAGE_VERSION" ]; then
+        echo "Adding package $PACKAGE_NAME version $PACKAGE_VERSION to project $PROJECT_DIR ..."
+        dotnet add "$PROJECT_DIR" package "$PACKAGE_NAME" --version "$PACKAGE_VERSION"
+    else
+        echo "Adding package $PACKAGE_NAME to project $PROJECT_DIR ..."
+        dotnet add "$PROJECT_DIR" package "$PACKAGE_NAME"
+    fi
 
     if [ $? -eq 0 ]; then
-        echo "Packages added successfully for $PROJECT"
+        echo "✅ Packages added successfully for $PROJECT"
     else
-        echo "Failed to add packages for $PROJECT"
+        echo "❌ Failed to add packages for $PROJECT"
     fi
 
 done < "$PACKAGE_FILE"
