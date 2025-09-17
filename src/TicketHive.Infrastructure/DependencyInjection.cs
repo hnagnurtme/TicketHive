@@ -44,8 +44,8 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         var privatePemPath = configuration["Jwt:PrivateKeyPath"];
-        var publicPemPath  = configuration["Jwt:PublicKeyPath"];
-        var keyId          = configuration["Jwt:KeyId"];
+        var publicPemPath = configuration["Jwt:PublicKeyPath"];
+        var keyId = configuration["Jwt:KeyId"];
 
         if (string.IsNullOrWhiteSpace(privatePemPath))
             throw new ArgumentNullException(nameof(privatePemPath), "Jwt:PrivateKeyPath is not configured.");
@@ -55,34 +55,33 @@ public static class DependencyInjection
             throw new ArgumentNullException(nameof(keyId), "Jwt:KeyId is not configured.");
 
         // KeyStore giữ cặp key suốt vòng đời app
-        services.AddSingleton<IRsaKeyStore>(sp =>
-            new RsaKeyStore(privatePemPath, publicPemPath, keyId)
-        );
+        var rsaKeyStore = new RsaKeyStore(privatePemPath, publicPemPath, keyId);
+        services.AddSingleton<IRsaKeyStore>(rsaKeyStore);
 
-        // Add JwtService và JwksProvider với scope per request
+        // JwtService và JwksProvider
         services.AddScoped<IJwksProvider, JwksProvider>();
         services.AddScoped<IJwtService, JwtService>();
 
-        //Add Authentication với JWT Bearer
+        // Authentication với JWT Bearer
+        var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
+        var audience = configuration["Jwt:Audience"] ?? "TicketHiveClients";
+        
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                // Resolve IRsaKeyStore từ DI
-                using var sp = services.BuildServiceProvider();
-                var rsaKeyStore = sp.GetRequiredService<IRsaKeyStore>();
-
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
+                    ValidIssuer = issuer,
                     ValidateAudience = true,
+                    ValidAudience = audience,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = configuration["Jwt:Issuer"] ?? "TicketHive",
-                    ValidAudience = configuration["Jwt:Audience"] ?? "TicketHive.Client",
                     IssuerSigningKey = rsaKeyStore.GetPublicKey()
                 };
+                options.RequireHttpsMetadata = false; // dev environment
             });
+        Console.WriteLine("RSA Key Store initialized with Key ID: " + rsaKeyStore.KeyId);
         return services;
     }
 }
