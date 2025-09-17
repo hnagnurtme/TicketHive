@@ -1,5 +1,6 @@
 using MediatR;
+using TicketHive.Application.DTOs.Auth;
 using TicketHive.Application.DTOs.Users;
 namespace TicketHive.Application.Commands.Auth;
 
-public record RegisterCommand (string Email, string Password, string FullName, string PhoneNumber) : IRequest<UserDTO>;
+public record RegisterCommand (string Email, string Password, string FullName, string PhoneNumber) : IRequest<RegisterResponseDto>;

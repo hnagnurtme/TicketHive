@@ -69,3 +69,6 @@ secrets.json
 
 # Node (if present for tooling or UI)
 node_modules/
+
+#Keys
+src/TicketHive.Api/Keys/
