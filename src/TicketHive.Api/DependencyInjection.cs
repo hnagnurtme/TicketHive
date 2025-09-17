@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.OpenApi.Models;
 
 namespace TicketHive.API;
@@ -52,4 +53,17 @@ public static class DependencyInjection
 
         return services;
     }
+    // configure AutoMapper
+    public static IServiceCollection AddMappings(this IServiceCollection services)
+{
+    var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+
+    var config = new MapperConfiguration(cfg =>
+    {
+        cfg.AddMaps(typeof(Program).Assembly); // Sử dụng assembly cụ thể
+    }, loggerFactory);
+
+    services.AddSingleton(config.CreateMapper());
+    return services;
+}
 }
