@@ -1,7 +1,9 @@
-using TicketHive.Domain.Entities;
+using System.Security.Claims;
 namespace TicketHive.Application.Interfaces;
 
 public interface IJwtService
 {
-    string GenerateToken(User user);
+    string GenerateToken(IEnumerable<Claim> claims);
+
+    ClaimsPrincipal? ValidateToken(string token);
 }

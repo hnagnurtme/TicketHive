@@ -34,7 +34,15 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDt
 
                 await UpdateUserLoginAsync(user);
 
-                var token = _jwtService.GenerateToken(user);
+                var claims = new List<System.Security.Claims.Claim>
+                {
+                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, user.Email),
+                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, user.FullName ?? string.Empty),
+                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
+                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, user.Role)
+                };
+                var token = _jwtService.GenerateToken(claims);
                 var userDto = new UserDTO(user.Id, user.Email, user.FullName, user.PhoneNumber, user.Role);
                 return new LoginResponseDto(token, userDto);
         }
