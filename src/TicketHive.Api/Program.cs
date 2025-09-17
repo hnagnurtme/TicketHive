@@ -10,6 +10,9 @@ builder.Services.AddDomain();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApi();
+builder.Services.AddMappings();
+// automapper
+
 
 var app = builder.Build();
 

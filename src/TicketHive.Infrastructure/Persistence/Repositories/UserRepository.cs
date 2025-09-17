@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using TicketHive.Application.Interfaces.Repositories;
+using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Domain.Entities;
 
 namespace TicketHive.Infrastructure.Persistence.Repositories

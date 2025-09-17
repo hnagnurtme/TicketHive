@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TicketHive.Application.Interfaces.Repositories;
-using TicketHive.Application.Interfaces;
+using TicketHive.Application.Common.Interfaces;
 using TicketHive.Infrastructure.Persistence;
 using TicketHive.Infrastructure.Persistence.Repositories;
 using TicketHive.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using TicketHive.Application.Common.Interfaces.Repositories;
 
 namespace TicketHive.Infrastructure;
 

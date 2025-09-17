@@ -1,4 +1,4 @@
-using TicketHive.Application.Interfaces;
+using TicketHive.Application.Common.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 namespace TicketHive.Infrastructure.Security;

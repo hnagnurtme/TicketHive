@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using TicketHive.Application.Interfaces;
+using TicketHive.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace TicketHive.Infrastructure.Security;
