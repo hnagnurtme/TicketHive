@@ -26,5 +26,4 @@ public class RsaKeyStore : IRsaKeyStore
     public RsaSecurityKey GetPrivateKey() => _privateKey;
 
     public RsaSecurityKey GetPublicKey() => _publicKey;
-    
 }

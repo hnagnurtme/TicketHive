@@ -27,5 +27,12 @@
     <ProjectReference Include="..\TicketHive.Infrastructure\TicketHive.Infrastructure.csproj" />
   </ItemGroup>
 
-
+   <ItemGroup>
+  <None Include="Keys\rsa_private.pem">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+  <None Include="Keys\rsa_public.pem">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 </Project>

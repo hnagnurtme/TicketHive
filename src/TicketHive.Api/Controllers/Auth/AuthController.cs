@@ -5,6 +5,8 @@ using TicketHive.Application.Commands.Auth;
 
 namespace TicketHive.Api.Controllers.Auth;
 
+[ApiController]
+[Route("api/auth")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]

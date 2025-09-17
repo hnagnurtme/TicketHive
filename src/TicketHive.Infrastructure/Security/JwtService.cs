@@ -2,30 +2,36 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using TicketHive.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace TicketHive.Infrastructure.Security;
 
 public class JwtService : IJwtService
 {
     private readonly IRsaKeyStore _rsaKeyStore;
+    private readonly IConfiguration _configuration;
 
 
-    public JwtService(IRsaKeyStore rsaKeyStore)
+    public JwtService(IRsaKeyStore rsaKeyStore, IConfiguration configuration)
     {
         _rsaKeyStore = rsaKeyStore;
+        _configuration = configuration;
     }
 
     public string GenerateToken(IEnumerable<Claim> claims)
     {
         var signingCredentials = new SigningCredentials(_rsaKeyStore.GetPrivateKey(), SecurityAlgorithms.RsaSha256);
 
+        var issuer = _configuration["Jwt:Issuer"] ?? "TicketHive";
+        var audience = _configuration["Jwt:Audience"] ?? "TicketHiveClients";
+
         var token = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: signingCredentials,
             notBefore: DateTime.UtcNow,
-            issuer: "TicketHive",
-            audience: "TicketHiveClients"
+            issuer: issuer,
+            audience: audience
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -33,12 +39,14 @@ public class JwtService : IJwtService
 
     public ClaimsPrincipal? ValidateToken(string token)
     {
+        var issuer = _configuration["Jwt:Issuer"] ?? "TicketHive";
+        var audience = _configuration["Jwt:Audience"] ?? "TicketHiveClients";
         var validationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = "TicketHive",
+            ValidIssuer = issuer,
             ValidateAudience = true,
-            ValidAudience = "TicketHiveClients",
+            ValidAudience = audience,
             ValidateLifetime = true,
             IssuerSigningKey = _rsaKeyStore.GetPublicKey(),
             ValidateIssuerSigningKey = true,
