@@ -1,6 +1,36 @@
+# ===============================================
+# TicketHive solution packages
+# ===============================================
+
 # API project packages
 TicketHive.Api Swashbuckle.AspNetCore
-TicketHive.Api MediatR
+TicketHive.Api MediatR 11.1.0
+TicketHive.Api MediatR.Extensions.Microsoft.DependencyInjection 11.1.0
+TicketHive.Api Microsoft.EntityFrameworkCore 9.0.9
+TicketHive.Api Microsoft.EntityFrameworkCore.Design 9.0.9
+TicketHive.Api Microsoft.EntityFrameworkCore.Relational 9.0.9
+TicketHive.Api System.IdentityModel.Tokens.Jwt
+TicketHive.Api Microsoft.IdentityModel.Tokens
 
 # Infrastructure project packages
-TicketHive.Infrastructure Npgsql.EntityFrameworkCore.PostgreSQL
+TicketHive.Infrastructure Npgsql.EntityFrameworkCore.PostgreSQL 9.0.9
+TicketHive.Infrastructure Microsoft.EntityFrameworkCore 9.0.9
+TicketHive.Infrastructure Microsoft.EntityFrameworkCore.Design 9.0.9
+TicketHive.Infrastructure Microsoft.EntityFrameworkCore.Relational 9.0.9
+TicketHive.Infrastructure System.IdentityModel.Tokens.Jwt
+TicketHive.Infrastructure Microsoft.IdentityModel.Tokens
+TicketHive.Infrastructure MediatR 11.1.0
+TicketHive.Infrastructure MediatR.Extensions.Microsoft.DependencyInjection 11.1.0
+
+# Application project packages
+TicketHive.Application MediatR 11.1.0
+TicketHive.Application MediatR.Extensions.Microsoft.DependencyInjection 11.1.0
+TicketHive.Application FluentValidation
+TicketHive.Application FluentValidation.DependencyInjectionExtensions
+
+# Tests project packages
+TicketHive.Tests MediatR 11.1.0
+TicketHive.Tests MediatR.Extensions.Microsoft.DependencyInjection 11.1.0
+
+# Domain project packages
+# (hiện tại không cần package nào)

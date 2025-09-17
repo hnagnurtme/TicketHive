@@ -2,7 +2,7 @@
 
 # ===============================================
 # commit.sh
-# Tạo commit message theo chuẩn Conventional Commits
+# Tạo commit message theo chuẩn Conventional Commits (với Scope)
 # ===============================================
 
 # Kiểm tra xem có trong Git repository không
@@ -40,6 +40,9 @@ case $choice in
   *) echo "Lựa chọn không hợp lệ. Thoát..."; exit 1 ;;
 esac
 
+# Nhập scope (tùy chọn)
+read -p "Nhập scope (phạm vi, ví dụ: auth, ticket; nhấn Enter để bỏ qua): " scope
+
 # Nhập mô tả commit
 read -p "Nhập mô tả commit (ngắn gọn): " description
 
@@ -49,8 +52,12 @@ if [ -z "$description" ]; then
   exit 1
 fi
 
-# Tạo commit message
-commit_message="$type: $description"
+# Tạo commit message với scope (nếu có)
+if [ -n "$scope" ]; then
+  commit_message="$type($scope): $description"
+else
+  commit_message="$type: $description"
+fi
 
 # Thêm tất cả các thay đổi
 echo "Đang thêm tất cả các thay đổi..."

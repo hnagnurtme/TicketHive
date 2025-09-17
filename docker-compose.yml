@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=tickethive;Username=tickethive;Password=tickethive
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  # Optional Postgres database (API currently uses InMemory EF)
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=tickethive
+      - POSTGRES_PASSWORD=tickethive
+      - POSTGRES_DB=tickethive
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
+
+
