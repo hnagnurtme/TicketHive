@@ -6,6 +6,8 @@ public class ApiResponse<T>
     public T? Data { get; set; }
     public int StatusCode { get; set; } = 200;
     public object? Meta { get; set; } 
+
+    public string ErrorCode { get; set; } = string.Empty;
     // 200 OK
     public static ApiResponse<T> Ok(T data, string? message = null, object? meta = null)
         => new ApiResponse<T> { Success = true, Data = data, Message = message, StatusCode = 200, Meta = meta };

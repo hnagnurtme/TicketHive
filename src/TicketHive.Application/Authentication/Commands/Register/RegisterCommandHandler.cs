@@ -5,8 +5,9 @@ using TicketHive.Domain.Exceptions.Base;
 using TicketHive.Application.Common.Interfaces;
 using TicketHive.Application.Authentication;
 using ErrorOr;
+using TicketHive.Application.Exceptions;
 
-namespace TicketHive.Application.Handlers.Auth
+namespace TicketHive.Application.Authentication
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
     {
@@ -21,8 +22,9 @@ namespace TicketHive.Application.Handlers.Auth
         public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             if (await _userRepository.ExistsByEmailAsync(request.Email))
-                throw new DomainException("Email already exists", "Email already exists");
-
+            {
+                throw new DuplicateEmailException("Email already in use");
+            }
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 10);
             var user = new User(request.Email, passwordHash, request.FullName, request.PhoneNumber);
 

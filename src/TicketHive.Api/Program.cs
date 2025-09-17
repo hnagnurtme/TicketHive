@@ -1,7 +1,9 @@
+using FluentValidation;
 using TicketHive.Application;
 using TicketHive.Domain;
 using TicketHive.Infrastructure;
 using TicketHive.API;
+using TicketHive.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApi();
 builder.Services.AddMappings();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 // automapper
 
 
@@ -22,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandling();
 
 app.UseHttpsRedirection();
 

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using TicketHive.Api.Common;
 using TicketHive.Api.Contracts.Authentication;
 using TicketHive.Application.Authentication;
-using TicketHive.Application.Queries.Auth;
 
 
 namespace TicketHive.Api.Controllers;
