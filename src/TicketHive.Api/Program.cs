@@ -3,7 +3,7 @@ using TicketHive.Application;
 using TicketHive.Domain;
 using TicketHive.Infrastructure;
 using TicketHive.API;
-using TicketHive.Api.Middleware;
+using TicketHive.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
