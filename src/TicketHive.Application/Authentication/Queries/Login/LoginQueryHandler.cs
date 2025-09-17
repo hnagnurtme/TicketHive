@@ -1,4 +1,4 @@
-namespace TicketHive.Application.Handlers.Auth;
+namespace TicketHive.Application.Authentication;
 
 using MediatR;
 using TicketHive.Application.Common.Interfaces.Repositories;
@@ -7,8 +7,6 @@ using TicketHive.Application.Common.Interfaces;
 using Domain.Entities;
 using BCrypt.Net;
 using System.Security.Claims;
-using TicketHive.Application.Queries.Auth;
-using TicketHive.Application.Authentication;
 using ErrorOr;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
