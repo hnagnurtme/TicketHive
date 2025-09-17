@@ -1,10 +1,14 @@
-namespace TicketHive.Application.Exceptions;
+namespace TicketHive.Domain.Exceptions;
 
-public class DuplicateEmailException : Exception
+using System.Net;
+using TicketHive.Domain.Exceptions.Base;
+
+public class DuplicateEmailException : DomainException
 {
-    public string ErrorCode { get; } = "123333";
+    public const string DuplicateEmailCode = "USER_EMAIL_DUPLICATE";
 
-    public DuplicateEmailException(string message) : base(message)
+    public DuplicateEmailException(string message = "Email already in use")
+        : base(message, DuplicateEmailCode, HttpStatusCode.Conflict)
     {
     }
 }

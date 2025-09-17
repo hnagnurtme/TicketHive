@@ -1,14 +1,10 @@
-using Microsoft.AspNetCore.Http;
-using System;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
 using TicketHive.Api.Common;
-using TicketHive.Application.Exceptions;
 using TicketHive.Domain.Exceptions;
 using TicketHive.Domain.Exceptions.Base;
 
-namespace TicketHive.Api.Middleware
+namespace TicketHive.Api.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {
@@ -48,7 +44,7 @@ namespace TicketHive.Api.Middleware
                 StatusCode = (int)HttpStatusCode.Conflict,
                 Data = null,
                 Meta = null,
-                ErrorCode = exception.ErrorCode // Mã lỗi 123333
+                ErrorCode = exception.Code
             };
 
             context.Response.ContentType = "application/json";

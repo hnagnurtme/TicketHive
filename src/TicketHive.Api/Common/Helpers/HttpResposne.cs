@@ -1,5 +1,6 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
+using TicketHive.Api.Common.Helpers;
 namespace TicketHive.Api.Common;
 
 public static class OK

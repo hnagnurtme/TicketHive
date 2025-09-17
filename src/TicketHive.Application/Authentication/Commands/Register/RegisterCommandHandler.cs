@@ -1,13 +1,11 @@
 using MediatR;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Domain.Entities;
-using TicketHive.Domain.Exceptions.Base;
 using TicketHive.Application.Common.Interfaces;
-using TicketHive.Application.Authentication;
 using ErrorOr;
-using TicketHive.Application.Exceptions;
+using TicketHive.Domain.Exceptions;
 
-namespace TicketHive.Application.Authentication
+namespace TicketHive.Application.Authentication.Commands.Register
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
     {
@@ -23,7 +21,7 @@ namespace TicketHive.Application.Authentication
         {
             if (await _userRepository.ExistsByEmailAsync(request.Email))
             {
-                throw new DuplicateEmailException("Email already in use");
+                throw new DuplicateEmailException();
             }
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 10);
             var user = new User(request.Email, passwordHash, request.FullName, request.PhoneNumber);

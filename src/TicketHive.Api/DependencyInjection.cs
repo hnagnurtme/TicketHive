@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace TicketHive.API;
@@ -8,7 +9,36 @@ public static class DependencyInjection
     public static IServiceCollection AddApi(this IServiceCollection services)
     {
         // Controllers
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<TicketHive.Api.Filters.ValidationFilter>();
+        })
+        .ConfigureApiBehaviorOptions(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.ModelError>())
+                    .Select(x => new
+                    {
+                        ErrorCode = "VALIDATION_ERROR",
+                        Message = x.ErrorMessage
+                    })
+                    .ToList();
+
+                var response = new TicketHive.Api.Common.ApiResponse<object>
+                {
+                    Success = false,
+                    Message = errors.FirstOrDefault()?.Message ?? "Validation error",
+                    StatusCode = 400,
+                    Data = null,
+                    Meta = null,
+                    ErrorCode = errors.FirstOrDefault()?.ErrorCode ?? "VALIDATION_ERROR"
+                };
+                return new ObjectResult(response) { StatusCode = 400 };
+            };
+        });
 
         // Swagger
         services.AddEndpointsApiExplorer();
