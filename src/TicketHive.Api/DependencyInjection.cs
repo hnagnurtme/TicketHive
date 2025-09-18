@@ -44,7 +44,25 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TicketHive API", Version = "v1" });
+
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "TicketHive API",
+                Version = "v1",
+                Description = "TicketHive is a robust platform for event ticket management, providing secure authentication, user management, and seamless event operations. This API enables integration with TicketHive's core features, supporting both internal and third-party applications.",
+                TermsOfService = new Uri("https://tickethive.com/terms"),
+                Contact = new OpenApiContact
+                {
+                    Name = "TicketHive Support",
+                    Email = "support@tickethive.com",
+                    Url = new Uri("https://tickethive.com/contact")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "MIT License",
+                    Url = new Uri("https://opensource.org/licenses/MIT")
+                }
+            });
 
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
@@ -70,6 +88,8 @@ public static class DependencyInjection
                     Array.Empty<string>()
                 }
             });
+
+            c.EnableAnnotations();
         });
 
 

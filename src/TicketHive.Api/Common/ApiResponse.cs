@@ -8,5 +8,4 @@ public class ApiResponse<T>
     public object? Meta { get; set; } 
 
     public string ErrorCode { get; set; } = string.Empty;
-    
 }

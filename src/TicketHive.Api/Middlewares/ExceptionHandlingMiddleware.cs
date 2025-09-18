@@ -58,6 +58,12 @@ namespace TicketHive.Api.Middlewares
         {
             var (statusCode, errorCode, message) = exception switch
             {
+                // UnAuthorization Exception (more specific, must come before DomainException)
+                UnAuthorizationException unAuthEx => (
+                    HttpStatusCode.Unauthorized,
+                    "UN_AUTHORIZED",
+                    unAuthEx.Message
+                ),
                 // Xử lý các ngoại lệ domain khác (nếu có DomainException)
                 DomainException domainEx => (
                     HttpStatusCode.BadRequest,
@@ -65,7 +71,7 @@ namespace TicketHive.Api.Middlewares
                     domainEx.Message
                 ),
                 // Xử lý lỗi xác thực JSON (nếu xảy ra ngoài ValidationFilter)
-                System.Text.Json.JsonException jsonEx => (
+                JsonException jsonEx => (
                     HttpStatusCode.BadRequest,
                     "JSON_ERROR",
                     jsonEx.Message
