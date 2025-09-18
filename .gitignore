@@ -72,3 +72,4 @@ node_modules/
 
 #Keys
 src/TicketHive.Api/Keys/
+.fake

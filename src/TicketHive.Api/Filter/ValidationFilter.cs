@@ -20,7 +20,7 @@ namespace TicketHive.Api.Filters
             {
                 var errors = context.ModelState
                     .Where(x => x.Value != null)
-                    .SelectMany(x => x.Value.Errors)
+                    .SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.ModelError>())
                     .Select(x => new
                     {
                         ErrorCode = "VALIDATION_ERROR",

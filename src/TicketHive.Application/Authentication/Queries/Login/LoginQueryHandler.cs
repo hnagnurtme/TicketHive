@@ -8,6 +8,7 @@ using Domain.Entities;
 using BCrypt.Net;
 using System.Security.Claims;
 using ErrorOr;
+using TicketHive.Domain.Exceptions;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
@@ -23,12 +24,12 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
                 var user = await GetUserByEmailAsync(request.Email);
                 if (user == null)
                 {
-                        throw new DomainException("User not found", "User not found");
+                        throw new UnAuthorizationException();
                 }
 
                 if (!VerifyPassword(request.Password, user.PasswordHash))
                 {
-                        throw new DomainException("Invalid password", "Invalid password");
+                        throw new UnAuthorizationException();
                 }
 
                 await UpdateUserLoginAsync(user);
