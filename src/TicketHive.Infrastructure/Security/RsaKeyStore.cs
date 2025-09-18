@@ -1,4 +1,4 @@
-using TicketHive.Application.Interfaces;
+using TicketHive.Application.Common.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 namespace TicketHive.Infrastructure.Security;
@@ -26,5 +26,4 @@ public class RsaKeyStore : IRsaKeyStore
     public RsaSecurityKey GetPrivateKey() => _privateKey;
 
     public RsaSecurityKey GetPublicKey() => _publicKey;
-    
 }

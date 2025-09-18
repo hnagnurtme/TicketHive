@@ -1,3 +1,5 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace TicketHive.API;
@@ -7,13 +9,60 @@ public static class DependencyInjection
     public static IServiceCollection AddApi(this IServiceCollection services)
     {
         // Controllers
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<TicketHive.Api.Filters.ValidationFilter>();
+        })
+        .ConfigureApiBehaviorOptions(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.ModelError>())
+                    .Select(x => new
+                    {
+                        ErrorCode = "VALIDATION_ERROR",
+                        Message = x.ErrorMessage
+                    })
+                    .ToList();
+
+                var response = new TicketHive.Api.Common.ApiResponse<object>
+                {
+                    Success = false,
+                    Message = errors.FirstOrDefault()?.Message ?? "Validation error",
+                    StatusCode = 400,
+                    Data = null,
+                    Meta = null,
+                    ErrorCode = errors.FirstOrDefault()?.ErrorCode ?? "VALIDATION_ERROR"
+                };
+                return new ObjectResult(response) { StatusCode = 400 };
+            };
+        });
 
         // Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TicketHive API", Version = "v1" });
+
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "TicketHive API",
+                Version = "v1",
+                Description = "TicketHive is a robust platform for event ticket management, providing secure authentication, user management, and seamless event operations. This API enables integration with TicketHive's core features, supporting both internal and third-party applications.",
+                TermsOfService = new Uri("https://tickethive.com/terms"),
+                Contact = new OpenApiContact
+                {
+                    Name = "TicketHive Support",
+                    Email = "support@tickethive.com",
+                    Url = new Uri("https://tickethive.com/contact")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "MIT License",
+                    Url = new Uri("https://opensource.org/licenses/MIT")
+                }
+            });
 
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
@@ -39,6 +88,8 @@ public static class DependencyInjection
                     Array.Empty<string>()
                 }
             });
+
+            c.EnableAnnotations();
         });
 
 
@@ -52,4 +103,17 @@ public static class DependencyInjection
 
         return services;
     }
+    // configure AutoMapper
+    public static IServiceCollection AddMappings(this IServiceCollection services)
+{
+    var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+
+    var config = new MapperConfiguration(cfg =>
+    {
+        cfg.AddMaps(typeof(Program).Assembly); // Sử dụng assembly cụ thể
+    }, loggerFactory);
+
+    services.AddSingleton(config.CreateMapper());
+    return services;
+}
 }
