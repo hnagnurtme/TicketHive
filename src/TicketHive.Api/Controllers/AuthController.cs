@@ -1,11 +1,13 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ErrorOr;
 
 using TicketHive.Api.Common;
 using TicketHive.Api.Contracts.Authentication;
 using TicketHive.Application.Authentication;
 using Swashbuckle.AspNetCore.Annotations;
+using TicketHive.Api.Common.Helpers;
 
 
 namespace TicketHive.Api.Controllers;
@@ -14,7 +16,7 @@ namespace TicketHive.Api.Controllers;
 [Route("api/auth")]
 public class AuthController(IMediator mediator , IMapper mapper) : ControllerBase
 {
-    
+
     [HttpPost("register")]
     [SwaggerOperation(
         Summary = "Register account",
@@ -25,14 +27,13 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var command = mapper.Map<RegisterCommand>(request);
-        var result = await mediator.Send(command);
-
-        var response = mapper.Map<AuthenticationResponse>(result);
-        return CREATE.HandleResult<AuthenticationResponse>(response, "User registered successfully");
+        ErrorOr<AuthenticationResult> result = await mediator.Send(command);
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Login success");
     }
 
 
-    [HttpPost("login")]
+    [HttpPost("login")] 
     [SwaggerOperation(
         Summary = "Login",
         Description = "Authenticate user and return a JWT token."
@@ -44,7 +45,7 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
         var query = mapper.Map<LoginQuery>(request);
         var result = await mediator.Send(query);
 
-        var response = mapper.Map<AuthenticationResponse>(result.Value);
-        return OK.HandleResult<AuthenticationResponse>(response, "User logged in successfully");
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Login success");
     }
 }
