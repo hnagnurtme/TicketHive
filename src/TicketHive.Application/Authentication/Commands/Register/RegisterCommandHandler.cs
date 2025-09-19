@@ -34,12 +34,12 @@ namespace TicketHive.Application.Authentication.Commands.Register
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, user.Email),
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, user.FullName ),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.MobilePhone, user.PhoneNumber),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, user.Role)
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.MobilePhone, user.PhoneNumber ),
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString())
             };
 
             var token = _jwtService.GenerateToken(claims);
-            var userDto = new UserDTO(user.Id, user.Email, user.FullName, user.PhoneNumber, user.CreatedAt ?? DateTime.UtcNow, user.UpdatedAt ?? DateTime.UtcNow);
+            var userDto = new UserDTO(user.Id, user.Email, user.FullName, user.PhoneNumber, user.CreatedAt , user.UpdatedAt);
             
             return new AuthenticationResult(token, userDto);
         }

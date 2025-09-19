@@ -23,18 +23,18 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPersistence(
+    public static IServiceCollection AddPersistence(
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        options.UseNpgsql(connectionString, npgsql =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseNpgsql(connectionString, npgsql =>
-            {
-                npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
-            });
-        });
-
+            npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
+        })
+        .UseSnakeCaseNamingConvention(); 
+    });
         services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
@@ -65,7 +65,7 @@ public static class DependencyInjection
         // Authentication với JWT Bearer
         var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
         var audience = configuration["Jwt:Audience"] ?? "TicketHiveClients";
-        
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

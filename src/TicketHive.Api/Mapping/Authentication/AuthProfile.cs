@@ -9,6 +9,10 @@ public class AuthProfile : Profile
     {
         CreateMap<RegisterRequest, RegisterCommand>();
         CreateMap<LoginRequest, LoginQuery>();
-        CreateMap<AuthenticationResult, AuthenticationResponse>();
+        CreateMap<AuthenticationResult, AuthenticationResponse>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.User.Id))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
     }
 }

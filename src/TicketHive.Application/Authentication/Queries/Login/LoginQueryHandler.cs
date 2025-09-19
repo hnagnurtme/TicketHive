@@ -40,10 +40,10 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
                         new Claim(ClaimTypes.Email, user.Email),
                         new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
                         new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
-                        new Claim(ClaimTypes.Role, user.Role)
+                        new Claim(ClaimTypes.Role, user.Role.ToString())
                 };
                 var token = _jwtService.GenerateToken(claims);
-                var userDto = new UserDTO(user.Id, user.Email, user.FullName ?? string.Empty, user.PhoneNumber ?? string.Empty, user.CreatedAt ?? DateTime.UtcNow, user.UpdatedAt ?? DateTime.UtcNow);
+                var userDto = new UserDTO(user.Id, user.Email, user.FullName ?? string.Empty, user.PhoneNumber ?? string.Empty, user.CreatedAt ,user.UpdatedAt);
                 return new AuthenticationResult(token, userDto);
         }
 
