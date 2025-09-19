@@ -17,10 +17,16 @@ public class TokenRepository : ITokenRepository
     public async Task<RefreshToken?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => await _dbContext.RefreshTokens.FindAsync(new object?[] { id }, cancellationToken);
 
-    public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken = default)
+    public async Task<RefreshToken?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         => await _dbContext.RefreshTokens
-            .FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash, cancellationToken);
-
+            .Include(rt => rt.User)
+            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
+            .OrderByDescending(rt => rt.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+    public async Task<IEnumerable<RefreshToken>> GetActiveTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+        => await _dbContext.RefreshTokens
+            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
+            .ToListAsync(cancellationToken);
     public async Task AddAsync(RefreshToken token, CancellationToken cancellationToken = default)
     {
         await _dbContext.RefreshTokens.AddAsync(token, cancellationToken);

@@ -8,6 +8,7 @@ using TicketHive.Api.Contracts.Authentication;
 using TicketHive.Application.Authentication;
 using Swashbuckle.AspNetCore.Annotations;
 using TicketHive.Api.Common.Helpers;
+using TicketHive.Application.Authentication.Commands.RefreshToken;
 
 
 namespace TicketHive.Api.Controllers;
@@ -59,10 +60,10 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
 
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        var command = mapper.Map<GenerateRefreshTokenCommand>(request);
+        var command = mapper.Map<ValidateRefreshTokenCommand>(request);
         var result = await mediator.Send(command);
 
-        var response = result.MapTo<RefreshTokenResult, RefreshTokenResponse>(mapper);
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
         return OK.HandleResult(response, "Refresh token success");
     }
 }

@@ -8,5 +8,5 @@ public record LoginQuery(
     string Password,
     string IpAddress,
     string UserAgent,
-    string? DeviceFingerprint
+    string DeviceFingerprint
 ) : IRequest<ErrorOr<AuthenticationResult>>;
