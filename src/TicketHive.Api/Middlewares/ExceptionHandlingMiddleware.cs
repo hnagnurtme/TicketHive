@@ -1,112 +1,87 @@
 using System.Net;
 using System.Text.Json;
 using TicketHive.Api.Common;
-using TicketHive.Domain.Exceptions;
 using TicketHive.Domain.Exceptions.Base;
 
-namespace TicketHive.Api.Middlewares
+namespace TicketHive.Api.Middlewares;
+
+public class ExceptionHandlingMiddleware
 {
-    public class ExceptionHandlingMiddleware
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+
+    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(context);
-            }
-            catch (DuplicateEmailException ex)
-            {
-                _logger.LogWarning("Duplicate email exception occurred: {Message}", ex.Message);
-                await HandleDuplicateEmailExceptionAsync(context, ex);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred");
-                await HandleExceptionAsync(context, ex);
-            }
-        }
-
-        private static Task HandleDuplicateEmailExceptionAsync(HttpContext context, DuplicateEmailException exception)
-        {
-            var response = new ApiResponse<object>
-            {
-                Success = false,
-                Message = exception.Message,
-                StatusCode = (int)HttpStatusCode.Conflict,
-                Data = null,
-                Meta = null,
-                ErrorCode = exception.Code
-            };
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-
-            var json = JsonSerializer.Serialize(response);
-            return context.Response.WriteAsync(json);
-        }
-
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            var (statusCode, errorCode, message) = exception switch
-            {
-                // UnAuthorization Exception (more specific, must come before DomainException)
-                UnAuthorizationException unAuthEx => (
-                    HttpStatusCode.Unauthorized,
-                    "UN_AUTHORIZED",
-                    unAuthEx.Message
-                ),
-                // Xử lý các ngoại lệ domain khác (nếu có DomainException)
-                DomainException domainEx => (
-                    HttpStatusCode.BadRequest,
-                    "DOMAIN_ERROR",
-                    domainEx.Message
-                ),
-                // Xử lý lỗi xác thực JSON (nếu xảy ra ngoài ValidationFilter)
-                JsonException jsonEx => (
-                    HttpStatusCode.BadRequest,
-                    "JSON_ERROR",
-                    jsonEx.Message
-                ),
-                // Xử lý các ngoại lệ không xác định
-                _ => (
-                    HttpStatusCode.InternalServerError,
-                    "INTERNAL_ERROR",
-                    "An unexpected error occurred."
-                )
-            };
-
-            var response = new ApiResponse<object>
-            {
-                Success = false,
-                Message = message,
-                StatusCode = (int)statusCode,
-                Data = null,
-                Meta = null,
-                ErrorCode = errorCode
-            };
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)statusCode;
-
-            var json = JsonSerializer.Serialize(response);
-            return context.Response.WriteAsync(json);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    public static class ExceptionHandlingMiddlewareExtensions
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder builder)
+        HttpStatusCode statusCode;
+        string errorCode;
+        string message;
+
+        switch (exception)
         {
-            return builder.UseMiddleware<ExceptionHandlingMiddleware>();
+            case DomainException domainEx:
+                statusCode = domainEx.StatusCode;
+                errorCode = domainEx.Code;
+                message = domainEx.Message;
+                _logger.LogWarning("Domain exception: {Code} - {Message}", errorCode, message);
+                break;
+
+            case JsonException jsonEx:
+                statusCode = HttpStatusCode.BadRequest;
+                errorCode = "JSON_ERROR";
+                message = jsonEx.Message;
+
+                _logger.LogWarning("Json parsing error: {Message}", message);
+                break;
+
+            default:
+                statusCode = HttpStatusCode.InternalServerError;
+                errorCode = "INTERNAL_ERROR";
+                message = "An unexpected error occurred.";
+
+                _logger.LogError(exception, "Unexpected system error");
+                break;
         }
+
+        var response = new ApiResponse<object>
+        {
+            Success = false,
+            Message = message,
+            StatusCode = (int)statusCode,
+            Data = null,
+            Meta = null,
+            ErrorCode = errorCode
+        };
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)statusCode;
+
+        var json = JsonSerializer.Serialize(response);
+        await context.Response.WriteAsync(json);
+    }
+}
+
+public static class ExceptionHandlingMiddlewareExtensions
+{
+    public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 }
