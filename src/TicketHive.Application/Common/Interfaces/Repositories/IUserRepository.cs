@@ -1,14 +1,14 @@
 using TicketHive.Domain.Entities;
+
 namespace TicketHive.Application.Common.Interfaces.Repositories;
 
-public interface IUserRepository
+public interface IUserRepository : IGenericRepository<User>
 {
-    Task CreateUserAsync(User user);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
-    Task<User?> GetUserByEmailAsync(string email);
 
-    Task<bool> ExistsByEmailAsync(string email);
+    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 
-    Task UpdateUserAsync(User user);
-
+    Task<User?> GetWithTokensAsync(Guid userId, CancellationToken cancellationToken = default);
+    
 }

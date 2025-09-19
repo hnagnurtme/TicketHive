@@ -8,7 +8,6 @@ using TicketHive.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TicketHive.Application.Common.Interfaces.Repositories;
-using TicketHive.Infrastructure.Repositories;
 using TicketHive.Infrastructure.Authentication;
 
 namespace TicketHive.Infrastructure;
@@ -37,8 +36,12 @@ public static class DependencyInjection
         })
         .UseSnakeCaseNamingConvention(); 
     });
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ITokenRepository,TokenRepository >();
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
         return services;
     }
@@ -67,6 +70,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
+
         // Authentication với JWT Bearer
         var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
         var audience = configuration["Jwt:Audience"] ?? "TicketHiveClients";
@@ -84,7 +88,7 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = rsaKeyStore.GetPublicKey()
                 };
-                options.RequireHttpsMetadata = false; // dev environment
+                options.RequireHttpsMetadata = false; 
             });
         Console.WriteLine("RSA Key Store initialized with Key ID: " + rsaKeyStore.KeyId);
         return services;

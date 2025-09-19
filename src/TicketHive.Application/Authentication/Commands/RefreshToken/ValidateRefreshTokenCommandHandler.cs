@@ -3,71 +3,62 @@ using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace TicketHive.Application.Authentication.Commands.RefreshToken;
 
 public class ValidateRefreshTokenCommandHandler
     : IRequestHandler<ValidateRefreshTokenCommand, ErrorOr<AuthenticationResult>>
 {
-    private readonly ITokenRepository _tokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtService _jwtService;
     private readonly IHashService _hashService;
     private readonly IMediator _mediator;
+    private readonly ILogger<ValidateRefreshTokenCommandHandler> _logger;
 
     public ValidateRefreshTokenCommandHandler(
-        ITokenRepository tokenRepository,
+        IUnitOfWork unitOfWork,
         IJwtService jwtService,
         IHashService hashService,
+        ILogger<ValidateRefreshTokenCommandHandler> logger,
         IMediator mediator)
     {
-        _tokenRepository = tokenRepository;
+        _unitOfWork = unitOfWork;
         _jwtService = jwtService;
         _hashService = hashService;
         _mediator = mediator;
+        _logger = logger;
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(
         ValidateRefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
-        System.Console.WriteLine($"Validating refresh token for UserId: {request.UserId}, IpAddress: {request.IpAddress}, UserAgent: {request.UserAgent}, DeviceFingerprint: {request.DeviceFingerprint}");
-        // 1. Lấy tất cả refresh token active của user
-        var tokens = await _tokenRepository.GetActiveTokensByUserIdAsync(request.UserId, cancellationToken);
+        var tokenRepo = _unitOfWork.Tokens;
 
-        // 2. So sánh refresh token client gửi với hash trong DB
-        var token = tokens.FirstOrDefault(t => 
-            _hashService.Verify(request.RefreshToken, t.TokenHash));
-
-        if (token == null || !token.IsActive)
+        var token = await tokenRepo.GetValidTokenAsync(
+            request.UserId,
+            request.UserAgent,
+            request.DeviceFingerprint,
+            cancellationToken);
+    
+        if (token == null || !_hashService.Verify(request.RefreshToken, token.TokenHash) || !token.IsActive)
         {
             return Error.Unauthorized(description: "Invalid or expired refresh token.");
         }
-
-        // 3. Optional: check userAgent / deviceFingerprint
-        if (!string.IsNullOrEmpty(token.UserAgent) &&
-            !string.Equals(token.UserAgent, request.UserAgent, StringComparison.OrdinalIgnoreCase))
-        {
-            return Error.Unauthorized(description: "Refresh token does not match the device (UserAgent mismatch).");
-        }
-
-        if (!string.IsNullOrEmpty(token.DeviceFingerprint) &&
-            !string.Equals(token.DeviceFingerprint, request.DeviceFingerprint, StringComparison.OrdinalIgnoreCase))
-        {
-            return Error.Unauthorized(description: "Refresh token does not match the device (Fingerprint mismatch).");
-        }
-
-        // IP address thường hay thay đổi → chỉ log warning
         if (!string.IsNullOrEmpty(token.IpAddress) &&
             !string.Equals(token.IpAddress, request.IpAddress, StringComparison.OrdinalIgnoreCase))
         {
-            Console.WriteLine($"⚠️ Warning: IP mismatch for refresh token. Expected {token.IpAddress}, got {request.IpAddress}");
+            _logger.LogWarning("IP mismatch for refresh token. Expected {Expected}, got {Actual}", 
+                token.IpAddress, request.IpAddress);
         }
 
-        // 4. Đánh dấu token cũ đã dùng
         token.MarkAsUsed();
-        await _tokenRepository.UpdateAsync(token, cancellationToken);
+        token.Replace(token.Id);
+        
+        tokenRepo.Update(token);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // 5. Sinh access token mới
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, token.User.Id.ToString()),
@@ -78,7 +69,6 @@ public class ValidateRefreshTokenCommandHandler
         };
         var accessToken = _jwtService.GenerateToken(claims);
 
-        // 6. Sinh refresh token mới
         var refreshCommand = new GenerateRefreshTokenCommand(
             token.UserId,
             request.IpAddress,
@@ -87,7 +77,6 @@ public class ValidateRefreshTokenCommandHandler
         );
         var newRefreshResult = await _mediator.Send(refreshCommand, cancellationToken);
 
-        // 7. Build DTO
         var userDto = new UserDTO(
             token.User.Id,
             token.User.Email,
