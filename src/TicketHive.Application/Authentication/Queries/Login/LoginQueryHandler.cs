@@ -2,39 +2,43 @@ namespace TicketHive.Application.Authentication;
 
 using MediatR;
 using TicketHive.Application.Common.Interfaces.Repositories;
-using Domain.Exceptions.Base;
 using TicketHive.Application.Common.Interfaces;
 using Domain.Entities;
-using BCrypt.Net;
 using System.Security.Claims;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
-        private readonly IUserRepository _userRepository;
-        private readonly IJwtService _jwtService;
-        public LoginQueryHandler(IUserRepository userRepository, IJwtService jwtService)
+    private readonly IUserRepository _userRepository;
+    private readonly IJwtService _jwtService;
+    private readonly IHashService _hashService;
+
+    private readonly IMediator _mediator;
+
+    public LoginQueryHandler(IUserRepository userRepository, IJwtService jwtService, IHashService hashService, IMediator mediator)
+    {
+        _userRepository = userRepository;
+        _jwtService = jwtService;
+        _hashService = hashService;
+        _mediator = mediator;
+    }
+    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
+    {
+        var user = await GetUserByEmailAsync(request.Email);
+        if (user == null)
         {
-                _userRepository = userRepository;
-                _jwtService = jwtService;
+            throw new UnAuthorizationException();
         }
-        public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
+
+        if (!VerifyPassword(request.Password, user.PasswordHash))
         {
-                var user = await GetUserByEmailAsync(request.Email);
-                if (user == null)
-                {
-                        throw new UnAuthorizationException();
-                }
+            throw new UnAuthorizationException();
+        }
 
-                if (!VerifyPassword(request.Password, user.PasswordHash))
-                {
-                        throw new UnAuthorizationException();
-                }
+        await UpdateUserLoginAsync(user);
 
-                await UpdateUserLoginAsync(user);
-
-                var claims = new List<Claim>
+        var claims = new List<Claim>
                 {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Email, user.Email),
@@ -42,22 +46,35 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
                         new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
                         new Claim(ClaimTypes.Role, user.Role.ToString())
                 };
-                var token = _jwtService.GenerateToken(claims);
-                var userDto = new UserDTO(user.Id, user.Email, user.FullName ?? string.Empty, user.PhoneNumber ?? string.Empty, user.CreatedAt ,user.UpdatedAt);
-                return new AuthenticationResult(token, userDto);
-        }
+        var accessToken = _jwtService.GenerateToken(claims);
+        var refreshTokenCommand = new GenerateRefreshTokenCommand(
+            user.Id,
+            request.IpAddress,
+            request.UserAgent,
+            request.DeviceFingerprint
+        );
 
-        private async Task<User?> GetUserByEmailAsync(string email)
-        {
-                return await _userRepository.GetUserByEmailAsync(email);
-        }
-        private bool VerifyPassword(string password, string passwordHash)
-        {
-                return BCrypt.Verify(password, passwordHash);
-        }
-        private async Task UpdateUserLoginAsync(User user)
-        {
-                user.UpdateLogin(DateTime.UtcNow);
-                await _userRepository.UpdateUserAsync(user);
-        }
+        var refreshTokenResult = await _mediator.Send(refreshTokenCommand, cancellationToken);
+
+        var userDto = new UserDTO(user.Id, user.Email, user.FullName ?? string.Empty, user.PhoneNumber ?? string.Empty, user.CreatedAt, user.UpdatedAt);
+        var tokenDto = new RefreshTokenDTO(
+                                refreshTokenResult.Value.Token,
+                                refreshTokenResult.Value.ExpiresAt
+                            );
+        return new AuthenticationResult(accessToken, tokenDto, userDto);
+    }
+
+    private async Task<User?> GetUserByEmailAsync(string email)
+    {
+        return await _userRepository.GetUserByEmailAsync(email);
+    }
+    private bool VerifyPassword(string password, string passwordHash)
+    {
+        return _hashService.Verify(password, passwordHash);
+    }
+    private async Task UpdateUserLoginAsync(User user)
+    {
+        user.UpdateLogin(DateTime.UtcNow);
+        await _userRepository.UpdateUserAsync(user);
+    }
 }

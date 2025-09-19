@@ -5,10 +5,9 @@ using TicketHive.Domain.Exceptions.Base;
 
 public class UnAuthorizationException : DomainException
 {
-    public const string unAuthor = "UN_AUTHORIZED";
 
     public UnAuthorizationException(string message = "Invalid credentials")
-        : base(message, unAuthor, HttpStatusCode.Unauthorized)
+        : base(message, ExceptionCode.UN_AUTHORIZED, HttpStatusCode.Unauthorized)
     {
     }
 }
