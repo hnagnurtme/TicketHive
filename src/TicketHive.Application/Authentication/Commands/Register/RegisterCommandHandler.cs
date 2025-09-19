@@ -4,17 +4,20 @@ using TicketHive.Domain.Entities;
 using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;
+using System.Security.Claims;
+
 
 namespace TicketHive.Application.Authentication.Commands.Register
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IJwtService _jwtService;
-        public RegisterCommandHandler(IUserRepository userRepository, IJwtService jwtService)
+        private readonly IHashService _hashService;
+
+        public RegisterCommandHandler(IUserRepository userRepository, IHashService hashService)
         {
             _userRepository = userRepository;
-            _jwtService = jwtService;
+            _hashService = hashService;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -23,25 +26,25 @@ namespace TicketHive.Application.Authentication.Commands.Register
             {
                 throw new DuplicateEmailException();
             }
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 10);
+            var passwordHash = _hashService.Hash(request.Password);
+
             var user = new User(request.Email, passwordHash, request.FullName, request.PhoneNumber);
 
             await _userRepository.CreateUserAsync(user);
 
 
-            var claims = new List<System.Security.Claims.Claim>
+            var claims = new List<Claim>
             {
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, user.Email),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, user.FullName ),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.MobilePhone, user.PhoneNumber ),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.FullName ),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? ""),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
-            var token = _jwtService.GenerateToken(claims);
-            var userDto = new UserDTO(user.Id, user.Email, user.FullName, user.PhoneNumber, user.CreatedAt , user.UpdatedAt);
-            
-            return new AuthenticationResult(token, userDto);
+            var userDto = new UserDTO(user.Id, user.Email, user.FullName, user.PhoneNumber ?? "", user.CreatedAt , user.UpdatedAt);
+
+            return new AuthenticationResult(null, null, userDto);
         }
     }
 }

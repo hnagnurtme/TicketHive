@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Domain.Entities;

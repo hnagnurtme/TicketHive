@@ -13,6 +13,11 @@ public class AuthProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.User.Id))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+            .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.AccessToken))
+            .ForMember(dest => dest.RefreshToken, opt => opt.MapFrom(src => src.RefreshToken != null 
+                ? src.RefreshToken.RefreshToken 
+                : string.Empty));
+        CreateMap<RefreshTokenResult, RefreshTokenResponse>();
     }
 }

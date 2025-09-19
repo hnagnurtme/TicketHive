@@ -1,6 +1,6 @@
 namespace TicketHive.Application.Authentication;
 
-public record AuthenticationResult(string Token, UserDTO User);
+public record AuthenticationResult(string? AccessToken , RefreshTokenDTO? RefreshToken ,UserDTO User);
 
 public record UserDTO
 (
@@ -12,3 +12,8 @@ public record UserDTO
     DateTime UpdatedAt
 );
 
+public record RefreshTokenDTO
+(
+    string RefreshToken,
+    DateTime RefreshTokenExpiresAt
+);

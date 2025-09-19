@@ -14,7 +14,7 @@ namespace TicketHive.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IMediator mediator , IMapper mapper) : ControllerBase
+public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
 {
 
     [HttpPost("register")]
@@ -33,7 +33,7 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
     }
 
 
-    [HttpPost("login")] 
+    [HttpPost("login")]
     [SwaggerOperation(
         Summary = "Login",
         Description = "Authenticate user and return a JWT token."
@@ -47,5 +47,22 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
 
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
         return OK.HandleResult(response, "Login success");
+    }
+    
+
+    [HttpPost("refresh-token")]
+    [SwaggerOperation(
+        Summary = "Generate refresh token",
+        Description = "Generate a new refresh token for the authenticated user."
+    )]
+    [ProducesResponseType(typeof(ApiResponse<RefreshTokenResponse>), StatusCodes.Status200OK)]
+
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var command = mapper.Map<GenerateRefreshTokenCommand>(request);
+        var result = await mediator.Send(command);
+
+        var response = result.MapTo<RefreshTokenResult, RefreshTokenResponse>(mapper);
+        return OK.HandleResult(response, "Refresh token success");
     }
 }

@@ -23,7 +23,7 @@ public class User
     public string Email { get; private set; }
     public string PasswordHash { get; private set; }
     public string FullName { get; private set; }
-    public string PhoneNumber { get; private set; } = string.Empty;
+    public string? PhoneNumber { get; private set; }
     public UserRole Role { get; private set; } = UserRole.USER;
     public bool EmailVerified { get; private set; } = false;
     public bool IsActive { get; private set; } = true;
@@ -32,6 +32,8 @@ public class User
     public DateTime? LockedUntil { get; private set; }
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
+
+    public ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
 
     private User()
     {
