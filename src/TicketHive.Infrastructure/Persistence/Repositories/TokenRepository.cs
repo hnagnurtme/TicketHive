@@ -1,49 +1,57 @@
 using Microsoft.EntityFrameworkCore;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Domain.Entities;
-using TicketHive.Infrastructure.Persistence;
 
-namespace TicketHive.Infrastructure.Repositories;
+namespace TicketHive.Infrastructure.Persistence.Repositories;
 
-public class TokenRepository : ITokenRepository
+public class TokenRepository : GenericRepository<RefreshToken>, ITokenRepository
 {
-    private readonly AppDbContext _dbContext;
 
-    public TokenRepository(AppDbContext dbContext)
+    public TokenRepository(AppDbContext dbContext) : base(dbContext) { }
+
+    public async Task<RefreshToken?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        _dbContext = dbContext;
-    }
-
-    public async Task<RefreshToken?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        => await _dbContext.RefreshTokens.FindAsync(new object?[] { id }, cancellationToken);
-
-    public async Task<RefreshToken?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
-        => await _dbContext.RefreshTokens
+        return await _dbContext.RefreshTokens
             .Include(rt => rt.User)
             .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
             .OrderByDescending(rt => rt.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
-    public async Task<IEnumerable<RefreshToken>> GetActiveTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken)
-        => await _dbContext.RefreshTokens
-            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
-            .ToListAsync(cancellationToken);
-    public async Task AddAsync(RefreshToken token, CancellationToken cancellationToken = default)
-    {
-        await _dbContext.RefreshTokens.AddAsync(token, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(RefreshToken token, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<RefreshToken>> GetActiveTokensByUserIdAsync(Guid userId, CancellationToken cancellationToken)
     {
-        _dbContext.RefreshTokens.Update(token);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return await _dbContext.RefreshTokens
+            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task RevokeAllForUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        await _dbContext.RefreshTokens
+        var tokens = await _dbContext.RefreshTokens
             .Where(rt => rt.UserId == userId && rt.RevokedAt == null)
-            .ExecuteUpdateAsync(updates => updates.SetProperty(rt => rt.RevokedAt, DateTime.UtcNow),
-                                cancellationToken);
+            .ToListAsync(cancellationToken);
+
+        foreach (var token in tokens)
+        {
+            token.Revoke();
+        }
+
+        _dbContext.RefreshTokens.UpdateRange(tokens);
+    }
+
+    public Task<RefreshToken?> GetLatestActiveTokenByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.RefreshTokens
+            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow && rt.Used == false)
+            .OrderByDescending(rt => rt.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public Task<RefreshToken?> GetValidTokenAsync(Guid userId, string userAgent, string deviceFingerprint, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.RefreshTokens
+            .Include(rt => rt.User)
+            .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow && rt.Used == false && rt.UserAgent == userAgent && rt.DeviceFingerprint == deviceFingerprint)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

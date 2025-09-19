@@ -1,8 +1,8 @@
-namespace TicketHive.Infrastructure.Persistence.Configurations;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TicketHive.Domain.Entities;
+
+namespace TicketHive.Infrastructure.Persistence.Configurations;
 
 public class TokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 {
@@ -21,14 +21,13 @@ public class TokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 
         builder.Property(rt => rt.CreatedAt)
                .IsRequired();
-
         builder.HasOne(rt => rt.User)
                .WithMany(u => u.RefreshTokens)
                .HasForeignKey(rt => rt.UserId)
                .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(rt => rt.ReplacedByToken)
-                .WithMany()
-                .HasForeignKey(rt => rt.ReplacedByTokenId)
-                .OnDelete(DeleteBehavior.Restrict);
+               .WithMany()
+               .HasForeignKey(rt => rt.ReplacedByTokenId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }
