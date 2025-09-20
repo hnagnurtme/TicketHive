@@ -29,7 +29,7 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
         var command = mapper.Map<RegisterCommand>(request);
         ErrorOr<AuthenticationResult> result = await mediator.Send(command);
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
-        return OK.HandleResult(response, "Login success");
+        return OK.HandleResult(response, "Register success");
     }
 
 
