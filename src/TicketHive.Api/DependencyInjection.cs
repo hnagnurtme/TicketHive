@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
-namespace TicketHive.API;
+namespace TicketHive.Api;
 
 public static class DependencyInjection
 {
@@ -103,17 +103,13 @@ public static class DependencyInjection
 
         return services;
     }
-    // configure AutoMapper
+
     public static IServiceCollection AddMappings(this IServiceCollection services)
 {
-    var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
-
-    var config = new MapperConfiguration(cfg =>
+    services.AddAutoMapper(cfg =>
     {
-        cfg.AddMaps(typeof(Program).Assembly); // Sử dụng assembly cụ thể
-    }, loggerFactory);
-
-    services.AddSingleton(config.CreateMapper());
+        cfg.AddMaps(typeof(Program).Assembly);
+    });
     return services;
 }
 }

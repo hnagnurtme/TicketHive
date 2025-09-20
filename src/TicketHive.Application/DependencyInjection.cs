@@ -15,6 +15,7 @@ public static class DependencyInjection
 
         // Nếu bạn dùng FluentValidation
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        
 
         return services;
     }

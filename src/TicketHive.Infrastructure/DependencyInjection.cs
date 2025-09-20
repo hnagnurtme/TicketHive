@@ -90,7 +90,6 @@ public static class DependencyInjection
                 options.RequireHttpsMetadata = false; 
 
             });
-        Console.WriteLine("RSA Key Store initialized with Key ID: " + rsaKeyStore.KeyId);
         return services;
     }
 }
