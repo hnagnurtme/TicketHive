@@ -17,4 +17,4 @@ fi
 
 # Run the project with dotnet watch
 echo "Running TicketHive.Api with dotnet watch..."
-dotnet watch --project src/TicketHive.Api/TicketHive.Api.csproj run
+dotnet run --project src/TicketHive.Api/TicketHive.Api.csproj run
