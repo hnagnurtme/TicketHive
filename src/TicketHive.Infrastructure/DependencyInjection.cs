@@ -40,8 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>))
 
         return services;
     }
@@ -64,12 +63,12 @@ public static class DependencyInjection
         var rsaKeyStore = new RsaKeyStore(privatePemPath, publicPemPath, keyId);
         services.AddSingleton<IRsaKeyStore>(rsaKeyStore);
 
+
         // Các service liên quan đến security
         services.AddScoped<IHashService, BCryptHashService>();
         services.AddScoped<IJwksProvider, JwksProvider>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
-
 
         // Authentication với JWT Bearer
         var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
@@ -89,6 +88,7 @@ public static class DependencyInjection
                     IssuerSigningKey = rsaKeyStore.GetPublicKey()
                 };
                 options.RequireHttpsMetadata = false; 
+
             });
         Console.WriteLine("RSA Key Store initialized with Key ID: " + rsaKeyStore.KeyId);
         return services;

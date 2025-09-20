@@ -82,3 +82,4 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
     private bool VerifyPassword(string password, string passwordHash)
         => _hashService.Verify(password, passwordHash);
 }
+

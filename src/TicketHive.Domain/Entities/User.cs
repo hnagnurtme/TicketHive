@@ -49,13 +49,13 @@ public class User
         FullName = fullName;
         PhoneNumber = phoneNumber;
     }
-
     public void UpdateLogin(DateTime loginTime)
     {
         LastLoginAt = loginTime;
         LoginAttempts = 0;
         LockedUntil = null;
         Touch();
+
     }
 
     public void IncrementLoginAttempts()
@@ -81,3 +81,4 @@ public enum UserRole
     ADMIN,
     ORGANIZER
 }
+

@@ -3,6 +3,7 @@ using MediatR;
 using System.Reflection;
 using FluentValidation;
 
+
 namespace TicketHive.Application;
 
 public static class DependencyInjection
@@ -14,7 +15,6 @@ public static class DependencyInjection
 
         // Nếu bạn dùng FluentValidation
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-    
 
         return services;
     }

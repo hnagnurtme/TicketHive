@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ErrorOr;
-
 using TicketHive.Api.Common;
 using TicketHive.Api.Contracts.Authentication;
 using TicketHive.Application.Authentication;
@@ -15,9 +14,9 @@ namespace TicketHive.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
+
 public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
 {
-
     [HttpPost("register")]
     [SwaggerOperation(
         Summary = "Register account",
@@ -45,7 +44,6 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
     {
         var query = mapper.Map<LoginQuery>(request);
         var result = await mediator.Send(query);
-
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
         return OK.HandleResult(response, "Login success");
     }

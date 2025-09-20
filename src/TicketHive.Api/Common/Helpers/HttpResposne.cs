@@ -1,7 +1,6 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using TicketHive.Api.Common.Helpers;
-
 namespace TicketHive.Api.Common;
 
 public static class OK
@@ -33,7 +32,7 @@ public static class CREATE
 
 public static class NO_CONTENT
 {
-    // ErrorOr<T>
+
     public static IActionResult HandleResult<T>(ErrorOr<T> result)
     {
         if (!result.IsError)
@@ -46,3 +45,4 @@ public static class NO_CONTENT
     public static IActionResult HandleResult<T>(T value)
         => BaseControllerHelpers.HandleResult(value, 204);
 }
+
