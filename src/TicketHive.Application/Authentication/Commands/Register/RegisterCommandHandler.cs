@@ -5,23 +5,25 @@ using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;
 using System.Security.Claims;
+using TicketHive.Application.Common.Interfaces.Events;
 
 namespace TicketHive.Application.Authentication.Commands.Register
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
     {
         private readonly IHashService _hashService;
-        private readonly IJwtService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IDomainEventDispatcher _domainEventDispatcher;
 
         public RegisterCommandHandler(
             IHashService hashService,
-            IJwtService jwtService,
+            IDomainEventDispatcher domainEventDispatcher,
             IUnitOfWork unitOfWork)
         {
             _hashService = hashService;
-            _jwtService = jwtService;
             _unitOfWork = unitOfWork;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -47,7 +49,8 @@ namespace TicketHive.Application.Authentication.Commands.Register
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
-            var accessToken = _jwtService.GenerateToken(claims);
+            await _domainEventDispatcher.DispatchEventsAsync(user.DomainEvents);
+            user.ClearDomainEvents();
 
             var userDto = new UserDTO(
                 user.Id,
@@ -58,7 +61,7 @@ namespace TicketHive.Application.Authentication.Commands.Register
                 user.UpdatedAt
             );
 
-            return new AuthenticationResult(accessToken, null, userDto);
+            return new AuthenticationResult(null, null, userDto);
         }
     }
 }

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Infrastructure.Authentication;
+using TicketHive.Application.Common.Interfaces.Events;
+using TicketHive.Infrastructure.Events;
 
 namespace TicketHive.Infrastructure;
 
@@ -20,6 +22,7 @@ public static class DependencyInjection
         services
             .AddPersistence(configuration)
             .AddSecurity(configuration);
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         return services;
     }
@@ -41,6 +44,8 @@ public static class DependencyInjection
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+        
 
         return services;
     }
