@@ -23,42 +23,62 @@ public class User
     public string Email { get; private set; }
     public string PasswordHash { get; private set; }
     public string FullName { get; private set; }
-    public string PhoneNumber { get; private set; }
-    public string Role { get; private set; } = "USER";
+    public string? PhoneNumber { get; private set; }
+    public UserRole Role { get; private set; } = UserRole.USER;
     public bool EmailVerified { get; private set; } = false;
     public bool IsActive { get; private set; } = true;
     public DateTime? LastLoginAt { get; private set; }
     public int LoginAttempts { get; private set; } = 0;
     public DateTime? LockedUntil { get; private set; }
-    public DateTime? CreatedAt { get; private set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
+
+    public ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
+
+    private User()
+    {
+        Email = string.Empty;
+        PasswordHash = string.Empty;
+        FullName = string.Empty;
+    } 
 
     public User(string email, string passwordHash, string fullName, string phoneNumber)
     {
-        Email = email;
+        Email = email.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
         FullName = fullName;
         PhoneNumber = phoneNumber;
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
     }
     public void UpdateLogin(DateTime loginTime)
     {
         LastLoginAt = loginTime;
         LoginAttempts = 0;
         LockedUntil = null;
-        UpdatedAt = DateTime.UtcNow;
+        Touch();
+
     }
 
     public void IncrementLoginAttempts()
     {
         LoginAttempts++;
-        UpdatedAt = DateTime.UtcNow;
+        Touch();
     }
 
     public void LockAccount(DateTime until)
     {
         LockedUntil = until;
-        UpdatedAt = DateTime.UtcNow;
+        Touch();
     }
+
+    public bool IsLocked => LockedUntil.HasValue && LockedUntil > DateTime.UtcNow;
+
+    private void Touch() => UpdatedAt = DateTime.UtcNow;
 }
+
+public enum UserRole
+{
+    USER,
+    ADMIN,
+    ORGANIZER
+}
+

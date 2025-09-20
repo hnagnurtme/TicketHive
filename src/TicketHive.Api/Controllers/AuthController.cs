@@ -1,20 +1,22 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+using ErrorOr;
 using TicketHive.Api.Common;
 using TicketHive.Api.Contracts.Authentication;
 using TicketHive.Application.Authentication;
 using Swashbuckle.AspNetCore.Annotations;
+using TicketHive.Api.Common.Helpers;
+using TicketHive.Application.Authentication.Commands.RefreshToken;
 
 
 namespace TicketHive.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IMediator mediator , IMapper mapper) : ControllerBase
+
+public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
 {
-    
     [HttpPost("register")]
     [SwaggerOperation(
         Summary = "Register account",
@@ -25,10 +27,9 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var command = mapper.Map<RegisterCommand>(request);
-        var result = await mediator.Send(command);
-
-        var response = mapper.Map<AuthenticationResponse>(result);
-        return CREATE.HandleResult<AuthenticationResponse>(response, "User registered successfully");
+        ErrorOr<AuthenticationResult> result = await mediator.Send(command);
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Login success");
     }
 
 
@@ -43,8 +44,24 @@ public class AuthController(IMediator mediator , IMapper mapper) : ControllerBas
     {
         var query = mapper.Map<LoginQuery>(request);
         var result = await mediator.Send(query);
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Login success");
+    }
+    
 
-        var response = mapper.Map<AuthenticationResponse>(result.Value);
-        return OK.HandleResult<AuthenticationResponse>(response, "User logged in successfully");
+    [HttpPost("refresh-token")]
+    [SwaggerOperation(
+        Summary = "Generate refresh token",
+        Description = "Generate a new refresh token for the authenticated user."
+    )]
+    [ProducesResponseType(typeof(ApiResponse<RefreshTokenResponse>), StatusCodes.Status200OK)]
+
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var command = mapper.Map<ValidateRefreshTokenCommand>(request);
+        var result = await mediator.Send(command);
+
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Refresh token success");
     }
 }

@@ -8,6 +8,7 @@ using TicketHive.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TicketHive.Application.Common.Interfaces.Repositories;
+using TicketHive.Infrastructure.Authentication;
 
 namespace TicketHive.Infrastructure;
 
@@ -23,19 +24,23 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPersistence(
+    public static IServiceCollection AddPersistence(
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        options.UseNpgsql(connectionString, npgsql =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseNpgsql(connectionString, npgsql =>
-            {
-                npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
-            });
-        });
+            npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
+        })
+        .UseSnakeCaseNamingConvention(); 
+    });
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>))
 
         return services;
     }
@@ -58,14 +63,17 @@ public static class DependencyInjection
         var rsaKeyStore = new RsaKeyStore(privatePemPath, publicPemPath, keyId);
         services.AddSingleton<IRsaKeyStore>(rsaKeyStore);
 
-        // JwtService và JwksProvider
+
+        // Các service liên quan đến security
+        services.AddScoped<IHashService, BCryptHashService>();
         services.AddScoped<IJwksProvider, JwksProvider>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
         // Authentication với JWT Bearer
         var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
         var audience = configuration["Jwt:Audience"] ?? "TicketHiveClients";
-        
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -79,7 +87,8 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = rsaKeyStore.GetPublicKey()
                 };
-                options.RequireHttpsMetadata = false; // dev environment
+                options.RequireHttpsMetadata = false; 
+
             });
         Console.WriteLine("RSA Key Store initialized with Key ID: " + rsaKeyStore.KeyId);
         return services;
