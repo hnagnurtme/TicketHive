@@ -6,6 +6,7 @@ using ErrorOr;
 using TicketHive.Domain.Exceptions;
 using System.Security.Claims;
 using TicketHive.Application.Common.Interfaces.Events;
+using Microsoft.Extensions.Logging;
 
 namespace TicketHive.Application.Authentication.Commands.Register
 {
@@ -16,12 +17,16 @@ namespace TicketHive.Application.Authentication.Commands.Register
 
         private readonly IDomainEventDispatcher _domainEventDispatcher;
 
+        private readonly ILogger<RegisterCommandHandler> _logger;
+
         public RegisterCommandHandler(
             IHashService hashService,
+            ILogger<RegisterCommandHandler> logger,
             IDomainEventDispatcher domainEventDispatcher,
             IUnitOfWork unitOfWork)
         {
             _hashService = hashService;
+            _logger = logger;
             _unitOfWork = unitOfWork;
             _domainEventDispatcher = domainEventDispatcher;
         }
@@ -30,7 +35,8 @@ namespace TicketHive.Application.Authentication.Commands.Register
         {
             if (await _unitOfWork.User.ExistsByEmailAsync(request.Email))
             {
-                throw new DuplicateEmailException();
+                _logger.LogWarning("Email {Email} is already in use.", request.Email);
+                throw new DuplicateEmailException("Email is already in use.");
             }
 
             var passwordHash = _hashService.Hash(request.Password);
@@ -57,6 +63,7 @@ namespace TicketHive.Application.Authentication.Commands.Register
                 user.Email,
                 user.FullName ?? string.Empty,
                 user.PhoneNumber ?? string.Empty,
+                user.EmailVerified,
                 user.CreatedAt,
                 user.UpdatedAt
             );

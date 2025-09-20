@@ -7,6 +7,8 @@ public static class ExceptionCode
     public const string TOKEN_ALREADY_REVOKED = "TOKEN_ALREADY_REVOKED";
 
     public const string TOKEN_ALREADY_USED = "TOKEN_ALREADY_USED";
+
+    public const string EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
 }
 
 

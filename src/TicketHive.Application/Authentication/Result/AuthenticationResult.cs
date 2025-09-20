@@ -8,6 +8,7 @@ public record UserDTO
     string Email,
     string FullName,
     string PhoneNumber,
+    bool EmailVerified,
     DateTime CreatedAt ,
     DateTime UpdatedAt
 );

@@ -79,6 +79,11 @@ public class User
         PhoneNumber = phoneNumber;
         Touch();
     }
+    public void MarkEmailAsVerified()
+    {
+        EmailVerified = true;
+        Touch();
+    }
 
     public bool IsLocked => LockedUntil.HasValue && LockedUntil > DateTime.UtcNow;
 

@@ -11,6 +11,7 @@ using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Infrastructure.Authentication;
 using TicketHive.Application.Common.Interfaces.Events;
 using TicketHive.Infrastructure.Events;
+using TicketHive.Infrastructure.ExternalServices;
 
 namespace TicketHive.Infrastructure;
 
@@ -23,6 +24,8 @@ public static class DependencyInjection
             .AddPersistence(configuration)
             .AddSecurity(configuration);
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+        services.AddScoped<IEmailSender, EmailSenderService>();
+
 
         return services;
     }
