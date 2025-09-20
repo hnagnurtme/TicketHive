@@ -29,7 +29,7 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
         var command = mapper.Map<RegisterCommand>(request);
         ErrorOr<AuthenticationResult> result = await mediator.Send(command);
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
-        return OK.HandleResult(response, "Login success");
+        return OK.HandleResult(response, "Register success");
     }
 
 
@@ -47,7 +47,7 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
         return OK.HandleResult(response, "Login success");
     }
-    
+
 
     [HttpPost("refresh-token")]
     [SwaggerOperation(
@@ -63,5 +63,19 @@ public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase
 
         var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
         return OK.HandleResult(response, "Refresh token success");
+    }
+
+    [HttpGet("verify-email")]
+    [SwaggerOperation(
+        Summary = "Verify email",
+        Description = "Verify user's email using the provided token."
+    )]
+    [ProducesResponseType(typeof(ApiResponse<AuthenticationResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> VerifyEmail([FromQuery] VerifyEmailParam request)
+    {
+        var query = mapper.Map<VerifyEmailQuery>(request);
+        var result = await mediator.Send(query);
+        var response = result.MapTo<AuthenticationResult, AuthenticationResponse>(mapper);
+        return OK.HandleResult(response, "Email verified successfully");
     }
 }

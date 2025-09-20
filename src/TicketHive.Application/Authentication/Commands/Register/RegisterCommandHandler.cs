@@ -5,30 +5,38 @@ using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;
 using System.Security.Claims;
+using TicketHive.Application.Common.Interfaces.Events;
+using Microsoft.Extensions.Logging;
 
 namespace TicketHive.Application.Authentication.Commands.Register
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
     {
         private readonly IHashService _hashService;
-        private readonly IJwtService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IDomainEventDispatcher _domainEventDispatcher;
+
+        private readonly ILogger<RegisterCommandHandler> _logger;
 
         public RegisterCommandHandler(
             IHashService hashService,
-            IJwtService jwtService,
+            ILogger<RegisterCommandHandler> logger,
+            IDomainEventDispatcher domainEventDispatcher,
             IUnitOfWork unitOfWork)
         {
             _hashService = hashService;
-            _jwtService = jwtService;
+            _logger = logger;
             _unitOfWork = unitOfWork;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             if (await _unitOfWork.User.ExistsByEmailAsync(request.Email))
             {
-                throw new DuplicateEmailException();
+                _logger.LogWarning("Email {Email} is already in use.", request.Email);
+                throw new DuplicateEmailException("Email is already in use.");
             }
 
             var passwordHash = _hashService.Hash(request.Password);
@@ -47,18 +55,20 @@ namespace TicketHive.Application.Authentication.Commands.Register
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
-            var accessToken = _jwtService.GenerateToken(claims);
+            await _domainEventDispatcher.DispatchEventsAsync(user.DomainEvents);
+            user.ClearDomainEvents();
 
             var userDto = new UserDTO(
                 user.Id,
                 user.Email,
                 user.FullName ?? string.Empty,
                 user.PhoneNumber ?? string.Empty,
+                user.EmailVerified,
                 user.CreatedAt,
                 user.UpdatedAt
             );
 
-            return new AuthenticationResult(accessToken, null, userDto);
+            return new AuthenticationResult(null, null, userDto);
         }
     }
 }
