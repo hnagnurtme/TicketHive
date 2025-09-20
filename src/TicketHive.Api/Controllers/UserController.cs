@@ -1,33 +1,37 @@
+using AutoMapper;
 using MediatR;
-
+using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-
+using TicketHive.Application.Users.Query;
+using TicketHive.Api.Common;
+using TicketHive.Api.Common.Helpers;
+using TicketHive.Api.Contracts.Users;
 
 namespace TicketHive.Api.Controllers.User;
 
 [ApiController]
 [Route("api/users")]
 
-public class UserController(IMediator mediator) : ControllerBase
+public class UserController(IMediator mediator, IMapper mapper) : ControllerBase
 {
 
-    /// <summary>
-    /// Lấy thông tin hồ sơ người dùng hiện tại.
-    /// </summary>
-    /// <returns>Thông tin hồ sơ người dùng.</returns>
-    [HttpGet("profile")]
+    [HttpGet("profile/{userId}")]
     [Authorize]
     [SwaggerOperation(
-        Summary = "Lấy hồ sơ người dùng",
-        Description = "Trả về thông tin hồ sơ của người dùng đã xác thực."
+        Summary = "Get User Profile",
+        Description = "Get the profile information of the authenticated user."
     )]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)] // Thay string bằng model thực tế nếu có
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetProfile()
+    public async Task<IActionResult> GetProfile([FromRoute] string userId)
     {
-
-        return Ok(" Test");
+        var query = new GetUserProfileQuery(userId);
+        ErrorOr<UserProfileResult> result = await mediator.Send(query);
+        var response = result.MapTo<UserProfileResult, UserProfileResponse>(mapper);
+        return OK.HandleResult(response, "User profile retrieved successfully");
     }
+    
+    
 }

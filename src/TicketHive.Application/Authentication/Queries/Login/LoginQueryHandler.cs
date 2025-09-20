@@ -2,7 +2,6 @@ namespace TicketHive.Application.Authentication;
 
 using MediatR;
 using TicketHive.Application.Common.Interfaces;
-using Domain.Entities;
 using System.Security.Claims;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;

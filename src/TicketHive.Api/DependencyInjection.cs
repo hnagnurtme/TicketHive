@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
-namespace TicketHive.API;
+namespace TicketHive.Api;
 
 public static class DependencyInjection
 {
