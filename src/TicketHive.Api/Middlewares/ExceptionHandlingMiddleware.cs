@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using TicketHive.Api.Common;
+using TicketHive.Application.Common.Exceptions.Base;
 using TicketHive.Domain.Exceptions.Base;
 
 namespace TicketHive.Api.Middlewares;
@@ -41,6 +42,13 @@ public class ExceptionHandlingMiddleware
                 errorCode = domainEx.Code;
                 message = domainEx.Message;
                 _logger.LogWarning("Domain exception: {Code} - {Message}", errorCode, message);
+                break;
+
+            case ApplicationExceptions appEx:
+                statusCode = appEx.StatusCode;
+                errorCode = appEx.Code;
+                message = appEx.Message;
+                _logger.LogWarning("Application exception: {Code} - {Message}", errorCode, message);
                 break;
 
             case JsonException jsonEx:

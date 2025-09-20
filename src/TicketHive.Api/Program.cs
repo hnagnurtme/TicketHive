@@ -2,11 +2,18 @@ using FluentValidation;
 using TicketHive.Application;
 using TicketHive.Domain;
 using TicketHive.Infrastructure;
-using TicketHive.API;
+using TicketHive.Api;
 using TicketHive.Api.Middlewares;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
+builder.Host.UseSerilog();
 
 builder.Services.AddDomain();
 builder.Services.AddApplication();
