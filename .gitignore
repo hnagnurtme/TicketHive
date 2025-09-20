@@ -73,3 +73,9 @@ node_modules/
 #Keys
 src/TicketHive.Api/Keys/
 .fake
+
+tests/TicketHive.Tests/TestResults
+tests/TicketHive.Tests/coverage-report
+tests/TicketHive.Tests/coverage
+tests/TicketHive.Tests/obj
+tests/TicketHive.Tests/bin

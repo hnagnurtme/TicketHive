@@ -1,7 +1,7 @@
 using Microsoft.IdentityModel.Tokens;
 namespace TicketHive.Application.Common.Interfaces;
 
-public interface IRsaKeyStore
+public interface IRsaKeyStore 
 {
     string KeyId { get; } 
     RsaSecurityKey GetPrivateKey();
