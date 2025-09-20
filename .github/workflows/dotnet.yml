@@ -7,7 +7,7 @@ on:
     branches: [ "master", "develop" ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,37 +19,18 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    # Tạo thư mục Keys và ghi file từ GitHub secrets
-    - name: Create RSA keys
+    # 🔑 Generate RSA keys before build
+    - name: Generate RSA keys
       run: |
-        mkdir -p src/TicketHive.Api/Keys
-        echo "$RSA_PRIVATE" | base64 -d > src/TicketHive.Api/Keys/rsa_private.pem
-        echo "$RSA_PUBLIC" | base64 -d > src/TicketHive.Api/Keys/rsa_public.pem
+        mkdir -p ./src/TicketHive.Api/Keys
+        openssl genrsa -out ./src/TicketHive.Api/Keys/rsa_private.pem 2048
+        openssl rsa -in ./src/TicketHive.Api/Keys/rsa_private.pem -pubout -out ./src/TicketHive.Api/Keys/rsa_public.pem
 
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
+    - name: Build tests
+      run: dotnet build ./tests/TicketHive.Tests/TicketHive.Tests.csproj --configuration Release
 
-    - name: Run tests with coverage
-      run: dotnet test ./tests/TicketHive.Tests/TicketHive.Tests.csproj \
-              --no-build \
-              --configuration Release \
-              --collect:"XPlat Code Coverage" \
-              --results-directory ./TestResults
-
-    - name: Generate HTML coverage report
-      run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool
-        reportgenerator \
-          -reports:"TestResults/**/*.cobertura.xml" \
-          -targetdir:"coverage-report" \
-          -reporttypes:Html
-
-    - name: Upload coverage artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: coverage-report
-
+    - name: Run tests
+      run: dotnet test ./tests/TicketHive.Tests/TicketHive.Tests.csproj --no-build --configuration Release
