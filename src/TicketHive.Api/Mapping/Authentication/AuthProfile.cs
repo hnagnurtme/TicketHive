@@ -25,6 +25,6 @@ public class AuthProfile : Profile
             .ForCtorParam("RefreshToken", opt => opt.MapFrom(src => src.Token))
             .ForCtorParam("IpAddress", opt => opt.MapFrom(src => src.IpAddress))
             .ForCtorParam("UserAgent", opt => opt.MapFrom(src => src.UserAgent))
-            .ForCtorParam("DeviceFingerprint", opt => opt.MapFrom(src => src.DeviceFingerprint ?? string.Empty))
+            .ForCtorParam("DeviceFingerprint", opt => opt.MapFrom(src => src.DeviceFingerprint ?? string.Empty));
     }
 }
