@@ -27,20 +27,17 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
         var user = await _unitOfWork.User.GetByEmailAsync(request.Email, cancellationToken);
         if (user == null)
         {
-            throw new UnAuthorizationException();
+            throw new UnAuthorizationException("Invalid credentials.");
         }
 
         if (!VerifyPassword(request.Password, user.PasswordHash))
         {
-            throw new UnAuthorizationException();
+            throw new UnAuthorizationException("Invalid credentials.");
         }
-
-        // Update last login
         user.UpdateLogin(DateTime.UtcNow);
         _unitOfWork.User.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Generate tokens
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

@@ -1,7 +1,8 @@
 namespace TicketHive.Application.Users.Result;
 
-public record UserProfileResult
+public record UpdatedUserProfileResult
 (
+    string UserId,
     string Email,
     string FullName,
     string PhoneNumber

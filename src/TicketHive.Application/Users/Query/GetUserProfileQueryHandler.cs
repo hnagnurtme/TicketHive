@@ -3,18 +3,17 @@ using MediatR;
 using ErrorOr;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
+using TicketHive.Application.Users.Result;
 
 public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, ErrorOr<UserProfileResult>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMediator _mediator;
 
     private readonly ILogger<GetUserProfileQueryHandler> _logger;
 
-    public GetUserProfileQueryHandler(IUnitOfWork unitOfWork, IMediator mediator, ILogger<GetUserProfileQueryHandler> logger)
+    public GetUserProfileQueryHandler(IUnitOfWork unitOfWork, ILogger<GetUserProfileQueryHandler> logger)
     {
         _unitOfWork = unitOfWork;
-        _mediator = mediator;
         _logger = logger;
     }
 

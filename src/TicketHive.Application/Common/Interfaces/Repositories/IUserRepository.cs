@@ -10,5 +10,5 @@ public interface IUserRepository : IGenericRepository<User>
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 
     Task<User?> GetWithTokensAsync(Guid userId, CancellationToken cancellationToken = default);
-    
+
 }

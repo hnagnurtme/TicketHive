@@ -70,6 +70,13 @@ public class User
         Touch();
     }
 
+    public void UpdateProfile(string fullName, string? phoneNumber)
+    {
+        FullName = fullName;
+        PhoneNumber = phoneNumber;
+        Touch();
+    }
+
     public bool IsLocked => LockedUntil.HasValue && LockedUntil > DateTime.UtcNow;
 
     private void Touch() => UpdatedAt = DateTime.UtcNow;
