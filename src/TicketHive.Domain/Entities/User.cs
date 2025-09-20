@@ -1,4 +1,6 @@
 using System;
+using TicketHive.Domain.Common.Events;
+using TicketHive.Domain.Events;
 
 namespace TicketHive.Domain.Entities;
 /**
@@ -40,7 +42,7 @@ public class User
         Email = string.Empty;
         PasswordHash = string.Empty;
         FullName = string.Empty;
-    } 
+    }
 
     public User(string email, string passwordHash, string fullName, string phoneNumber)
     {
@@ -48,6 +50,7 @@ public class User
         PasswordHash = passwordHash;
         FullName = fullName;
         PhoneNumber = phoneNumber;
+        AddDomainEvent(new UserRegisteredDomainEvent(Id, email));
     }
     public void UpdateLogin(DateTime loginTime)
     {
@@ -76,10 +79,23 @@ public class User
         PhoneNumber = phoneNumber;
         Touch();
     }
+    public void MarkEmailAsVerified()
+    {
+        EmailVerified = true;
+        Touch();
+    }
 
     public bool IsLocked => LockedUntil.HasValue && LockedUntil > DateTime.UtcNow;
 
     private void Touch() => UpdatedAt = DateTime.UtcNow;
+
+    private readonly List<IDomainEvent> _domainEvents = new();
+
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    private void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+
+    public void ClearDomainEvents() => _domainEvents.Clear();
 }
 
 public enum UserRole

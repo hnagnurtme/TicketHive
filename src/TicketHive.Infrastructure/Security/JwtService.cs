@@ -18,16 +18,24 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public string GenerateToken(IEnumerable<Claim> claims)
+    public string GenerateToken(
+    IEnumerable<Claim> claims,
+    TimeSpan? lifetime = null
+)
     {
-        var signingCredentials = new SigningCredentials(_rsaKeyStore.GetPrivateKey(), SecurityAlgorithms.RsaSha256);
+        var signingCredentials = new SigningCredentials(
+            _rsaKeyStore.GetPrivateKey(),
+            SecurityAlgorithms.RsaSha256
+        );
 
         var issuer = _configuration["Jwt:Issuer"] ?? "TicketHive";
         var audience = _configuration["Jwt:Audience"] ?? "TicketHiveClients";
 
+        var expires = DateTime.UtcNow.Add(lifetime ?? TimeSpan.FromHours(1));
+
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: expires,
             signingCredentials: signingCredentials,
             notBefore: DateTime.UtcNow,
             issuer: issuer,
@@ -36,6 +44,7 @@ public class JwtService : IJwtService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
 
     public ClaimsPrincipal? ValidateToken(string token)
     {
@@ -50,7 +59,7 @@ public class JwtService : IJwtService
             ValidateLifetime = true,
             IssuerSigningKey = _rsaKeyStore.GetPublicKey(),
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.FromMinutes(5) 
+            ClockSkew = TimeSpan.FromMinutes(5)
         };
 
         try
@@ -64,5 +73,5 @@ public class JwtService : IJwtService
             return null;
         }
     }
-    
+
 }

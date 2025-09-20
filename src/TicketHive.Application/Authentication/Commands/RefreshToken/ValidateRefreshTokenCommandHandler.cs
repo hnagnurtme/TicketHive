@@ -82,6 +82,7 @@ public class ValidateRefreshTokenCommandHandler
             token.User.Email,
             token.User.FullName ?? string.Empty,
             token.User.PhoneNumber ?? string.Empty,
+            token.User.EmailVerified,
             token.User.CreatedAt,
             token.User.UpdatedAt
         );

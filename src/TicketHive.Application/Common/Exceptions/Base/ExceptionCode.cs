@@ -11,6 +11,8 @@ public static class ExceptionCode
     public const string INVALID_FORMAT = "INVALID_FORMAT";
 
     public const string NOT_FOUND = "NOT_FOUND";
+
+    public const string EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
 }
 
 

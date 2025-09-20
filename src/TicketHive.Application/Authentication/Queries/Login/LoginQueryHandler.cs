@@ -29,6 +29,11 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
         {
             throw new UnAuthorizationException("Invalid credentials.");
         }
+        // Check if email is verified
+        if (!user.EmailVerified)
+        {
+            throw new EmailNotVerifyException("Email is not verified. Please verify your email before logging in.");
+        }
 
         if (!VerifyPassword(request.Password, user.PasswordHash))
         {
@@ -63,6 +68,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
             user.Email,
             user.FullName ?? string.Empty,
             user.PhoneNumber ?? string.Empty,
+            user.EmailVerified,
             user.CreatedAt,
             user.UpdatedAt
         );

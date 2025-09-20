@@ -15,6 +15,7 @@ public class AuthProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+            .ForMember(dest => dest.EmailVerified, opt => opt.MapFrom(src => src.User.EmailVerified))
             .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.AccessToken))
             .ForMember(dest => dest.RefreshToken, opt => opt.MapFrom(src => src.RefreshToken != null
                 ? src.RefreshToken.RefreshToken
@@ -26,5 +27,7 @@ public class AuthProfile : Profile
             .ForCtorParam("IpAddress", opt => opt.MapFrom(src => src.IpAddress))
             .ForCtorParam("UserAgent", opt => opt.MapFrom(src => src.UserAgent))
             .ForCtorParam("DeviceFingerprint", opt => opt.MapFrom(src => src.DeviceFingerprint ?? string.Empty));
+
+        CreateMap<VerifyEmailParam, VerifyEmailQuery>();
     }
 }
