@@ -6,6 +6,7 @@ using System.Security.Claims;
 using ErrorOr;
 using TicketHive.Domain.Exceptions;
 using TicketHive.Application.Common.Interfaces.Repositories;
+using TicketHive.Domain.Entities;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
@@ -44,13 +45,19 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
+            };
+            foreach (UserRole role in Enum.GetValues(typeof(UserRole)))
+            {
+                if (role != UserRole.NONE && user.Roles.HasFlag(role))
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+                }
+            }
 
         var accessToken = _jwtService.GenerateToken(claims);
 

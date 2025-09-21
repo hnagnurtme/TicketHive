@@ -46,15 +46,6 @@ namespace TicketHive.Application.Authentication.Commands.Register
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
-
             await _domainEventDispatcher.DispatchEventsAsync(user.DomainEvents);
             user.ClearDomainEvents();
 

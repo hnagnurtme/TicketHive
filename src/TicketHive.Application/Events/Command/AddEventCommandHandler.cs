@@ -53,9 +53,6 @@ public class AddEventCommandHandler : IRequestHandler<AddEventCommand, ErrorOr<A
         await _unitOfWork.Events.AddAsync(newEvent);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await _unitOfWork.Events.AddAsync(newEvent, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
         AddEventResult addEventResult = new AddEventResult(
             newEvent.Id,
             newEvent.Name,
