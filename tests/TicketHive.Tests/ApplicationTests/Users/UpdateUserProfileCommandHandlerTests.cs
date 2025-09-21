@@ -25,7 +25,7 @@ namespace TicketHive.Tests.ApplicationTests.Users
             _userRepoMock = new Mock<IUserRepository>();
             _loggerMock = new Mock<ILogger<UpdateUserProfileCommandHandler>>();
 
-            _unitOfWorkMock.Setup(u => u.User).Returns(_userRepoMock.Object);
+            _unitOfWorkMock.Setup(u => u.Users).Returns(_userRepoMock.Object);
             _handler = new UpdateUserProfileCommandHandler(_unitOfWorkMock.Object, _loggerMock.Object);
         }
 

@@ -25,7 +25,7 @@ public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, E
             throw new ArgumentException("Invalid user id format.");
         }
 
-        var user = await _unitOfWork.User.GetByIdAsync(userId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
         if (user == null)
         {
             _logger.LogWarning("User not found: {UserId}", request.UserId);

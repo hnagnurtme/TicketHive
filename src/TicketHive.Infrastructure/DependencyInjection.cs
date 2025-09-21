@@ -12,6 +12,7 @@ using TicketHive.Infrastructure.Authentication;
 using TicketHive.Application.Common.Interfaces.Events;
 using TicketHive.Infrastructure.Events;
 using TicketHive.Infrastructure.ExternalServices;
+using TicketHive.Infrastructure.Identity;
 
 namespace TicketHive.Infrastructure;
 
@@ -25,8 +26,6 @@ public static class DependencyInjection
             .AddSecurity(configuration);
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         services.AddScoped<IEmailSender, EmailSenderService>();
-
-
         return services;
     }
 
@@ -46,6 +45,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         return services;
@@ -75,7 +75,9 @@ public static class DependencyInjection
         services.AddScoped<IJwksProvider, JwksProvider>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
-
+        // Service để lấy thông tin user hiện tại từ context
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         // Authentication với JWT Bearer
         var issuer = configuration["Jwt:Issuer"] ?? "TicketHive";
         var audience = configuration["Jwt:Audience"] ?? "TicketHiveClients";

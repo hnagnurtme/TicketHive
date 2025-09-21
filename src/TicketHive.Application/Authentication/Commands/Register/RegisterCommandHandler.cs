@@ -33,7 +33,7 @@ namespace TicketHive.Application.Authentication.Commands.Register
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            if (await _unitOfWork.User.ExistsByEmailAsync(request.Email))
+            if (await _unitOfWork.Users.ExistsByEmailAsync(request.Email))
             {
                 _logger.LogWarning("Email {Email} is already in use.", request.Email);
                 throw new DuplicateEmailException("Email is already in use.");
@@ -42,18 +42,9 @@ namespace TicketHive.Application.Authentication.Commands.Register
             var passwordHash = _hashService.Hash(request.Password);
             var user = new User(request.Email, passwordHash, request.FullName, request.PhoneNumber);
 
-            await _unitOfWork.User.AddAsync(user, cancellationToken);
+            await _unitOfWork.Users.AddAsync(user, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
 
             await _domainEventDispatcher.DispatchEventsAsync(user.DomainEvents);
             user.ClearDomainEvents();

@@ -4,6 +4,7 @@ using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using TicketHive.Domain.Entities;
 
 namespace TicketHive.Application.Authentication.Commands.RefreshToken;
 
@@ -65,8 +66,14 @@ public class ValidateRefreshTokenCommandHandler
             new Claim(ClaimTypes.Email, token.User.Email),
             new Claim(ClaimTypes.Name, token.User.FullName ?? string.Empty),
             new Claim(ClaimTypes.MobilePhone, token.User.PhoneNumber ?? string.Empty),
-            new Claim(ClaimTypes.Role, token.User.Role.ToString())
         };
+        foreach (UserRole role in Enum.GetValues(typeof(UserRole)))
+        {
+            if (role != UserRole.NONE && token.User.Roles.HasFlag(role))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+            }
+        }
         var accessToken = _jwtService.GenerateToken(claims);
 
         var refreshCommand = new GenerateRefreshTokenCommand(
