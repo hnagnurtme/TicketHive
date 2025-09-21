@@ -11,8 +11,8 @@ public class UserProfile : Profile
     {
         CreateMap<UserProfileResult, UserProfileResponse>();
         CreateMap<UpdatedUserProfileResult, UpdateUserProfileResponse>();
-
         CreateMap<UpdateUserProfileRequest, UpdateUserProfileCommand>();
+        
     }
 }
 

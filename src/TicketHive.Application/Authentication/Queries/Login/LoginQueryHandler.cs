@@ -24,7 +24,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.User.GetByEmailAsync(request.Email, cancellationToken);
+        var user = await _unitOfWork.Users.GetByEmailAsync(request.Email, cancellationToken);
         if (user == null)
         {
             throw new UnAuthorizationException("Invalid credentials.");
@@ -40,7 +40,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
             throw new UnAuthorizationException("Invalid credentials.");
         }
         user.UpdateLogin(DateTime.UtcNow);
-        _unitOfWork.User.Update(user);
+        _unitOfWork.Users.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var claims = new List<Claim>

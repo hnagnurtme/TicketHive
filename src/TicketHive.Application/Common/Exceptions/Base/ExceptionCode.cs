@@ -13,6 +13,8 @@ public static class ExceptionCode
     public const string NOT_FOUND = "NOT_FOUND";
 
     public const string EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
+
+    public const string INVALID_PERMISSION = "INVALID_PERMISSION";
 }
 
 

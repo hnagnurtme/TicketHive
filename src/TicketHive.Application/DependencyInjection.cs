@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using FluentValidation;
-
-
+using MediatR;
+using TicketHive.Application.Common;
 
 namespace TicketHive.Application;
 
@@ -14,8 +14,11 @@ public static class DependencyInjection
         services.AddMediatR(cfg => 
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        // Nếu bạn dùng FluentValidation
+        // Đăng ký tất cả FluentValidation validators trong assembly này
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Thêm ValidationBehavior vào pipeline của MediatR
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }

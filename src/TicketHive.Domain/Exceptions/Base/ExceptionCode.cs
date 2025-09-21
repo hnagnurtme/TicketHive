@@ -9,6 +9,9 @@ public static class ExceptionCode
     public const string TOKEN_ALREADY_USED = "TOKEN_ALREADY_USED";
 
     public const string EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
+    public const string INVALID_DATE = "INVALID_DATE";
+
+    public const string INVALID_OPERATION = "INVALID_OPERATION";
 }
 
 
