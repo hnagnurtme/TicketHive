@@ -25,7 +25,7 @@ public class VerifyEmailQueryHandler : IRequestHandler<VerifyEmailQuery, ErrorOr
     {
 
         // Check email exists
-        var user = await _unitOfWork.User.GetByEmailAsync(request.Email, cancellationToken);
+        var user = await _unitOfWork.Users.GetByEmailAsync(request.Email, cancellationToken);
         if (user == null)
         {
             _logger.LogWarning("Email {Email} not found during verification.", request.Email);
@@ -50,7 +50,7 @@ public class VerifyEmailQueryHandler : IRequestHandler<VerifyEmailQuery, ErrorOr
         // Mark email as verified
         user.MarkEmailAsVerified();
 
-        _unitOfWork.User.Update(user);
+        _unitOfWork.Users.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Email {Email} successfully verified.", request.Email);
         // Return user info

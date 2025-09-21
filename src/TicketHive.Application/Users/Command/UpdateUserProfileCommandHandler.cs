@@ -27,7 +27,7 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
             throw new InvalidFormatException("Invalid user id format.");
         }
 
-        var user = await _unitOfWork.User.GetByIdAsync(userId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
         if (user == null)
         {
             _logger.LogWarning("User not found: {UserId}", request.UserId);
@@ -41,7 +41,7 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
                 request.PhoneNumber ?? user.PhoneNumber
             );
 
-            _unitOfWork.User.Update(user);
+            _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 

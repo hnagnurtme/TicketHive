@@ -12,13 +12,16 @@ public class UnitOfWork : IUnitOfWork
 
     public ITokenRepository Tokens { get; }
 
-    public IUserRepository User { get; }
+    public IUserRepository Users { get; }
+
+    public IEventRepository Events { get; }
 
     public UnitOfWork(AppDbContext dbContext)
     {
         _dbContext = dbContext;
         Tokens = new TokenRepository(_dbContext);
-        User = new UserRepository(_dbContext);
+        Users = new UserRepository(_dbContext);
+        Events = new EventRepository(_dbContext);
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TicketHive.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using TicketHive.Infrastructure.Persistence;
 namespace TicketHive.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921152655_AddEventTable")]
+    partial class AddEventTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,18 +30,14 @@ namespace TicketHive.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)")
+                        .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<DateTime>("EndTime")
@@ -46,20 +45,17 @@ namespace TicketHive.Infrastructure.Migrations
                         .HasColumnName("end_time");
 
                     b.Property<string>("ImageUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)")
+                        .HasColumnType("text")
                         .HasColumnName("image_url");
 
                     b.Property<bool>("IsFeatured")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasDefaultValue(false)
                         .HasColumnName("is_featured");
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("location");
 
                     b.Property<string>("Name")
@@ -90,17 +86,14 @@ namespace TicketHive.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("start_time");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("updated_at");
 
                     b.Property<int?>("VenueCapacity")
                         .HasColumnType("integer")
@@ -218,10 +211,6 @@ namespace TicketHive.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("login_attempts");
 
-                    b.Property<Guid?>("OrganizerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("organizer_id");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text")
@@ -242,9 +231,6 @@ namespace TicketHive.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
-                    b.HasIndex("OrganizerId")
-                        .HasDatabaseName("ix_users_organizer_id");
-
                     b.ToTable("users", (string)null);
                 });
 
@@ -253,7 +239,7 @@ namespace TicketHive.Infrastructure.Migrations
                     b.HasOne("TicketHive.Domain.Entities.User", "Organizer")
                         .WithMany()
                         .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_events_users_organizer_id");
 
@@ -278,16 +264,6 @@ namespace TicketHive.Infrastructure.Migrations
                     b.Navigation("ReplacedByToken");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TicketHive.Domain.Entities.User", b =>
-                {
-                    b.HasOne("TicketHive.Domain.Entities.User", "Organizer")
-                        .WithMany()
-                        .HasForeignKey("OrganizerId")
-                        .HasConstraintName("fk_users_users_organizer_id");
-
-                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("TicketHive.Domain.Entities.User", b =>
