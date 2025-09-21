@@ -21,9 +21,15 @@ public class EventProfile : Profile
                 src.SaleEndTime,
                 src.ImageUrl,
                 src.IsFeatured,
-                Guid.Empty 
+                Guid.Empty
             ));
 
         CreateMap<AddEventResult, AddEventResponse>();
+
+        CreateMap<PublishEventResult, EventResponse>();
+        CreateMap<PublishEventRequest, PushlishEventCommand>()
+            .ConstructUsing(src => new PushlishEventCommand(
+                src.EventId
+            ));
     }
 }

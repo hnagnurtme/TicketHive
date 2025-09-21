@@ -4,10 +4,11 @@ using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using TicketHive.Application.Common.Constants;
+using TicketHive.Application.Common.Exceptions;
 using TicketHive.Application.Common.Interfaces;
 using TicketHive.Application.Common.Interfaces.Repositories;
+using TicketHive.Application.Exceptions;
 using TicketHive.Domain.Entities;
-using TicketHive.Domain.Exceptions;
 
 public class AddEventCommandHandler : IRequestHandler<AddEventCommand, ErrorOr<AddEventResult>>
 {
@@ -29,7 +30,7 @@ public class AddEventCommandHandler : IRequestHandler<AddEventCommand, ErrorOr<A
         var userEmail = currentUserService.Email;
         var userFullName = currentUserService.FullName;
         var userPhoneNumber = currentUserService.PhoneNumber;
-        var userRole = currentUserService.Role;
+        var userRole = currentUserService.Roles;
         // validate 
         ValidateUserInfo(userId, userEmail, userFullName, userPhoneNumber);
         ValidateUserPermissions(userRole);
@@ -82,17 +83,12 @@ public class AddEventCommandHandler : IRequestHandler<AddEventCommand, ErrorOr<A
         }
     }
     
-    private void ValidateUserPermissions(string? role)
+    private void ValidateUserPermissions(List<string> roles)
     {
-        if (string.IsNullOrEmpty(role))
+        if (roles == null || !roles.Contains(RoleConstants.ORGANIZER))
         {
-            _logger.LogWarning("User role is missing.");
-            throw new UnAuthorizationException("User role is missing.");
-        }
-        if (role != RoleConstants.ORGANIZER && role != RoleConstants.ADMIN)
-        {
-            _logger.LogWarning("Unauthorized attempt to add event by user with role: {Role}", role);
-            throw new InvalidPermissionException("Only users with ORGANIZER or ADMIN roles can add events.");
+            _logger.LogWarning("User does not have the required permissions. Roles: {Roles}", roles);
+            throw new UnAuthorizationException("You do not have permission to create an event.");
         }
     }
 }

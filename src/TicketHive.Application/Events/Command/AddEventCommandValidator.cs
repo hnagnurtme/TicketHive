@@ -9,7 +9,6 @@ public class AddEventCommandValidator : AbstractValidator<AddEventCommand>
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Event name is required.")
             .MaximumLength(100).WithMessage("Event name must not exceed 100 characters.");
-
         RuleFor(x => x.Slug)
             .NotEmpty().WithMessage("Event slug is required.")
             .Matches("^[a-z0-9]+(?:-[a-z0-9]+)*$").WithMessage("Slug must be URL friendly (lowercase letters, numbers, hyphens).")

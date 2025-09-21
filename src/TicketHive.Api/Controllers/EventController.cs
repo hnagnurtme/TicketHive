@@ -32,4 +32,23 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         var response = result.MapTo<AddEventResult, AddEventResponse>(mapper);
         return OK.HandleResult(response, "Event created successfully");
     }
+
+
+    [HttpPatch("publish")]
+    [SwaggerOperation(
+        Summary = "Publish an event",
+        Description = "Publish an event to make it publicly available."
+    )]
+    [ProducesResponseType(typeof(ApiResponse<EventResponse>), StatusCodes.Status200OK)] 
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PublishEvent([FromBody] PublishEventRequest publishEventRequest)
+    {
+        var command = mapper.Map<PushlishEventCommand>(publishEventRequest);
+        ErrorOr<PublishEventResult> result = await mediator.Send(command);
+        var response = result.MapTo<PublishEventResult, EventResponse>(mapper);
+        return OK.HandleResult(response, "Event published successfully");
+    }
 }

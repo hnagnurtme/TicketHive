@@ -6,5 +6,5 @@ public interface ICurrentUserService
     string? Email { get; }
     string? FullName { get; }
     string? PhoneNumber { get; }
-    string? Role { get; }
+    List<string> Roles { get; }
 }

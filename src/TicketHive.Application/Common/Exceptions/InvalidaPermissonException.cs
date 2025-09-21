@@ -1,4 +1,4 @@
-namespace TicketHive.Domain.Exceptions;
+namespace TicketHive.Application.Exceptions;
 
 using System.Net;
 using TicketHive.Application.Common.Exceptions.Base;

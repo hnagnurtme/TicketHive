@@ -27,6 +27,6 @@ public class CurrentUserService : ICurrentUserService
     public string? PhoneNumber =>
         _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.MobilePhone);
 
-    public string? Role =>
-        _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Role);
+    public List<string> Roles =>
+        _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList() ?? new List<string>();
 }
