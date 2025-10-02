@@ -20,17 +20,19 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - "*.sh"
+  - .gitignore
 
 # Include files that start with underscores
 include:
   - _redirects
+  - .nojekyll
 
-# Set the default layout
-defaults:
-  - scope:
-      path: ""
-    values:
-      layout: default
+# Disable Jekyll processing for certain directories
+# This ensures Swagger UI files are served as-is
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 
 # GitHub Pages specific settings
 github_username: hnagnurtme
@@ -40,3 +42,14 @@ repository: TicketHive
 api_title: "TicketHive API"
 api_version: "v1"
 api_description: "Event ticket management platform API"
+
+# Disable processing for swagger-ui directory
+sass:
+  style: compressed
+
+# Set default front matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

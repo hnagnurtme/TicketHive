@@ -144,26 +144,6 @@ Generate test coverage report:
 ./Test.sh
 ```
 
-## 📊 API Overview
-
-### Core Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/auth/register` | Register new user account |
-| `POST` | `/api/auth/login` | User authentication |
-| `POST` | `/api/auth/refresh-token` | Generate refresh token |
-| `GET` | `/api/auth/verify-email` | Verify user email |
-| `GET` | `/api/events` | Get all events |
-| `POST` | `/api/events` | Create new event |
-| `GET` | `/api/events/{id}` | Get event by ID |
-| `PUT` | `/api/events/{id}` | Update event |
-| `DELETE` | `/api/events/{id}` | Delete event |
-| `GET` | `/api/tickets` | Get tickets with pagination |
-| `POST` | `/api/tickets` | Create new ticket |
-| `GET` | `/api/tickets/{id}` | Get ticket by ID |
-| `PUT` | `/api/tickets/{id}` | Update ticket |
-| `DELETE` | `/api/tickets/{id}` | Delete ticket |
 
 ### Authentication
 
@@ -186,21 +166,3 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-- **Documentation**: [API Documentation](https://hnagnurtme.github.io/TicketHive/)
-- **Email**: support@tickethive.com
-- **Website**: https://tickethive.com/contact
-
-## 🙏 Acknowledgments
-
-- Built with [.NET](https://dotnet.microsoft.com/)
-- Documentation powered by [Swagger UI](https://swagger.io/tools/swagger-ui/)
-- Hosted on [GitHub Pages](https://pages.github.com/)
-
----
-
-<div align="center">
-  Made with ❤️ by the TicketHive Team
-</div>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive API documentation for TicketHive event ticket management platform">
+    <title>TicketHive API Documentation</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="swagger-ui/favicon-32x32.png">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hnagnurtme.github.io/TicketHive/">
+    <meta property="og:title" content="TicketHive API Documentation">
+    <meta property="og:description" content="Comprehensive API documentation for TicketHive event ticket management platform">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://hnagnurtme.github.io/TicketHive/">
+    <meta property="twitter:title" content="TicketHive API Documentation">
+    <meta property="twitter:description" content="Comprehensive API documentation for TicketHive event ticket management platform">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .nav {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .nav a {
+            display: inline-block;
+            margin: 10px 15px;
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        
+        .nav a:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+        }
+        
+        .nav a.primary {
+            background-color: #28a745;
+            font-size: 1.1rem;
+            padding: 18px 35px;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        
+        .nav a.primary:hover {
+            background-color: #1e7e34;
+            box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .feature {
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        
+        .feature h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .feature p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .content {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin: 40px 0;
+        }
+        
+        .content h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .content h3 {
+            color: #555;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .content ul {
+            margin-left: 30px;
+        }
+        
+        .content li {
+            margin-bottom: 8px;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            color: #666;
+            border-top: 1px solid #eee;
+            background: white;
+            border-radius: 15px;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .nav a {
+                display: block;
+                margin: 10px auto;
+                max-width: 300px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .feature {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 TicketHive API</h1>
+            <p>Comprehensive API Documentation for Event Ticket Management Platform</p>
+        </div>
+        
+        <div class="nav">
+            <a href="swagger-ui/" class="primary">📖 View API Documentation</a>
+            <a href="https://github.com/hnagnurtme/TicketHive">📦 GitHub Repository</a>
+            <a href="demo.html">🧪 Quick Demo</a>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🔐 Authentication & Security</h3>
+                <p>JWT-based authentication with email verification, refresh tokens, and secure password handling for robust security.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎪 Event Management</h3>
+                <p>Complete event lifecycle management including creation, publishing, status tracking, and advanced filtering capabilities.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎟️ Ticket Operations</h3>
+                <p>Comprehensive ticket management with activation controls, event-specific retrieval, and powerful sorting options.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>👤 User Profiles</h3>
+                <p>Secure user registration and profile management with email verification and profile update capabilities.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🛠️ Developer Friendly</h3>
+                <p>Built with .NET 8.0, Clean Architecture, comprehensive testing, and extensive API documentation.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🐳 Production Ready</h3>
+                <p>Docker support, Entity Framework Core, advanced logging, and deployment-ready configuration.</p>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h2>🚀 Quick Start</h2>
+            <p>Get started with the TicketHive API in minutes:</p>
+            
+            <h3>1. Authentication</h3>
+            <p>Register and authenticate to get your JWT token:</p>
+            <pre><code>POST /api/auth/register
+POST /api/auth/login</code></pre>
+            
+            <h3>2. Create Events</h3>
+            <p>Create and manage your events:</p>
+            <pre><code>POST /api/events
+GET /api/events
+PUT /api/events/{id}</code></pre>
+            
+            <h3>3. Manage Tickets</h3>
+            <p>Handle ticket operations with full control:</p>
+            <pre><code>POST /api/tickets
+GET /api/tickets
+GET /api/tickets/events/{eventId}</code></pre>
+            
+            <h2>📋 Core Features</h2>
+            <ul>
+                <li><strong>RESTful API</strong> - Clean, predictable URLs and HTTP methods</li>
+                <li><strong>JSON Responses</strong> - Consistent data format across all endpoints</li>
+                <li><strong>JWT Authentication</strong> - Secure token-based authentication</li>
+                <li><strong>Pagination</strong> - Efficient data retrieval for large datasets</li>
+                <li><strong>Filtering & Sorting</strong> - Flexible query capabilities</li>
+                <li><strong>Error Handling</strong> - Comprehensive error responses with details</li>
+                <li><strong>Rate Limiting</strong> - Protection against abuse and overuse</li>
+                <li><strong>CORS Support</strong> - Cross-origin resource sharing enabled</li>
+            </ul>
+            
+            <h2>🔗 Base URL</h2>
+            <p>All API requests should be made to:</p>
+            <pre><code>https://api.tickethive.com/</code></pre>
+            
+            <h2>📊 HTTP Status Codes</h2>
+            <p>The API uses standard HTTP status codes:</p>
+            <ul>
+                <li><code>200</code> - OK: Request successful</li>
+                <li><code>201</code> - Created: Resource created successfully</li>
+                <li><code>400</code> - Bad Request: Invalid request parameters</li>
+                <li><code>401</code> - Unauthorized: Authentication required</li>
+                <li><code>403</code> - Forbidden: Insufficient permissions</li>
+                <li><code>404</code> - Not Found: Resource not found</li>
+                <li><code>500</code> - Internal Server Error: Server error</li>
+            </ul>
+            
+            <h2>📖 API Endpoints Overview</h2>
+            <h3>Authentication</h3>
+            <ul>
+                <li><code>POST /api/auth/register</code> - Register new user account</li>
+                <li><code>POST /api/auth/login</code> - User authentication</li>
+                <li><code>POST /api/auth/refresh-token</code> - Generate refresh token</li>
+                <li><code>GET /api/auth/verify-email</code> - Verify user email</li>
+            </ul>
+            
+            <h3>Events</h3>
+            <ul>
+                <li><code>GET /api/events</code> - Get all events</li>
+                <li><code>POST /api/events</code> - Create new event</li>
+                <li><code>GET /api/events/{id}</code> - Get event by ID</li>
+                <li><code>PUT /api/events/{id}</code> - Update event</li>
+                <li><code>DELETE /api/events/{id}</code> - Delete event</li>
+                <li><code>GET /api/events/paged</code> - Get events with pagination</li>
+                <li><code>PATCH /api/events/publish</code> - Publish an event</li>
+            </ul>
+            
+            <h3>Tickets</h3>
+            <ul>
+                <li><code>GET /api/tickets</code> - Get tickets with pagination</li>
+                <li><code>POST /api/tickets</code> - Create new ticket</li>
+                <li><code>GET /api/tickets/{id}</code> - Get ticket by ID</li>
+                <li><code>PUT /api/tickets/{id}</code> - Update ticket</li>
+                <li><code>DELETE /api/tickets/{id}</code> - Delete ticket</li>
+                <li><code>GET /api/tickets/events/{eventId}</code> - Get tickets by event</li>
+                <li><code>PATCH /api/tickets/{id}/deactivate</code> - Deactivate ticket</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ by the TicketHive Team</p>
+            <p>
+                <a href="https://github.com/hnagnurtme/TicketHive">GitHub Repository</a> | 
+                <a href="swagger.json">OpenAPI Specification</a> | 
+                <a href="https://opensource.org/licenses/MIT">MIT License</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
