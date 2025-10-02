@@ -14,7 +14,7 @@ namespace TicketHive.Api.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ADMIN, ORGANIZER")]
-[Route("api/event")]
+[Route("api/events")]
 public class EventController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     [HttpPost()]

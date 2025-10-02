@@ -16,12 +16,15 @@ public class UnitOfWork : IUnitOfWork
 
     public IEventRepository Events { get; }
 
+    public ITicketRepository Tickets { get; }
+
     public UnitOfWork(AppDbContext dbContext)
     {
         _dbContext = dbContext;
         Tokens = new TokenRepository(_dbContext);
         Users = new UserRepository(_dbContext);
         Events = new EventRepository(_dbContext);
+        Tickets = new TicketRepository(_dbContext);
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class

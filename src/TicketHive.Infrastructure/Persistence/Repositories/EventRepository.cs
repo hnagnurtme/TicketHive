@@ -13,4 +13,10 @@ public class EventRepository : GenericRepository<Event>, IEventRepository
         return await _dbContext.Events
             .FirstOrDefaultAsync(e => e.Slug == slug, cancellationToken);
     }
+
+    public async Task<bool> ExistsAsync(Guid eventId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Events
+            .AnyAsync(e => e.Id == eventId, cancellationToken);
+    }
 }
