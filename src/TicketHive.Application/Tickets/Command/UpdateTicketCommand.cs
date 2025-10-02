@@ -16,6 +16,5 @@ public record UpdateTicketCommand(
     DateTime? SaleStartTime,
     DateTime? SaleEndTime,
     bool IsActive,
-    int SortOrder,
-    Guid UpdatedBy
+    int SortOrder
 ) : IRequest<ErrorOr<TicketDetailResult>>;

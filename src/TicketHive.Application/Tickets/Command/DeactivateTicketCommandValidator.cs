@@ -10,8 +10,5 @@ public class DeactivateTicketCommandValidator : AbstractValidator<DeactivateTick
             .NotEmpty()
             .WithMessage("Ticket ID is required");
 
-        RuleFor(x => x.DeactivatedBy)
-            .NotEmpty()
-            .WithMessage("DeactivatedBy is required");
     }
 }

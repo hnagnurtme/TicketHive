@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TicketHive.Application.Common.Interfaces;
 using TicketHive.Application.Common.Interfaces.Repositories;
 
 namespace TicketHive.Application.Tickets;
@@ -9,15 +10,24 @@ public class DeleteTicketCommandHandler : IRequestHandler<DeleteTicketCommand, E
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeleteTicketCommandHandler> _logger;
+    private readonly ICurrentUserService _currentUserService;
 
-    public DeleteTicketCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteTicketCommandHandler> logger)
+    public DeleteTicketCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteTicketCommandHandler> logger, ICurrentUserService currentUserService)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _currentUserService = currentUserService;
     }
 
     public async Task<ErrorOr<bool>> Handle(DeleteTicketCommand request, CancellationToken cancellationToken)
     {
+        var currentUserId = _currentUserService.UserId;
+        if (currentUserId == Guid.Empty)
+        {
+            _logger.LogWarning("Invalid user ID from current user service");
+            return Error.Unauthorized("User.Unauthorized", "User not authorized");
+        }
+
         var ticket = await _unitOfWork.Tickets.GetByIdAsync(request.TicketId, cancellationToken);
 
         if (ticket == null)
@@ -34,7 +44,7 @@ public class DeleteTicketCommandHandler : IRequestHandler<DeleteTicketCommand, E
             return Error.Conflict("Ticket.HasSales", "Cannot delete ticket with existing sales");
         }
 
-        _logger.LogInformation("Deleting ticket with ID: {TicketId}", request.TicketId);
+        _logger.LogInformation("Deleting ticket with ID: {TicketId} by user: {UserId}", request.TicketId, currentUserId);
 
         _unitOfWork.Tickets.Delete(ticket);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

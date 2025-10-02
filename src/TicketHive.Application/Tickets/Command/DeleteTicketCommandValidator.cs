@@ -9,9 +9,5 @@ public class DeleteTicketCommandValidator : AbstractValidator<DeleteTicketComman
         RuleFor(x => x.TicketId)
             .NotEmpty()
             .WithMessage("Ticket ID is required");
-
-        RuleFor(x => x.DeletedBy)
-            .NotEmpty()
-            .WithMessage("DeletedBy is required");
     }
 }
