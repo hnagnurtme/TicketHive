@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketHive API Documentation</title>
-    <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
-    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    <title>TicketHive API Documentation - Simple Test</title>
+    <link rel="stylesheet" type="text/css" href="swagger-ui/swagger-ui.css" />
     <style>
         html {
             box-sizing: border-box;
@@ -19,27 +17,6 @@
         body {
             margin:0;
             background: #fafafa;
-        }
-        .swagger-ui .topbar {
-            background-color: #1f2937;
-        }
-        .swagger-ui .topbar .download-url-wrapper .select-label {
-            color: #ffffff;
-        }
-        .swagger-ui .topbar .download-url-wrapper input[type=text] {
-            min-width: 350px;
-        }
-        .swagger-ui .info {
-            margin: 50px 0;
-        }
-        .swagger-ui .info hgroup.main {
-            margin: 0 0 20px 0;
-        }
-        .swagger-ui .info hgroup.main .title {
-            font-size: 36px;
-            margin: 0;
-            font-family: sans-serif;
-            color: #3b4151;
         }
         .custom-header {
             text-align: center;
@@ -58,26 +35,41 @@
             font-size: 1.2em;
             opacity: 0.9;
         }
+        .test-info {
+            background: #e3f2fd;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+        }
     </style>
 </head>
 <body>
     <div class="custom-header">
-        <h1>🎫 TicketHive API</h1>
-        <p>Comprehensive API Documentation for Event Ticket Management Platform</p>
+        <h1>🎫 TicketHive API - Simple Test</h1>
+        <p>Testing Swagger UI with simplified OpenAPI specification</p>
+    </div>
+    
+    <div class="test-info">
+        <strong>🧪 This is a test page</strong> using a simplified OpenAPI spec to verify Swagger UI functionality.
+        <br>
+        <a href="swagger-ui/">← Back to full documentation</a> | 
+        <a href="test.html">Debug page</a>
     </div>
     
     <div id="swagger-ui"></div>
 
-    <script src="./swagger-ui-bundle.js" charset="UTF-8"></script>
-    <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+    <script src="swagger-ui/swagger-ui-bundle.js" charset="UTF-8"></script>
+    <script src="swagger-ui/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
     <script>
         window.onload = function() {
-            // Use relative path since debug test confirmed it works
-            let specUrl = '../swagger.json';
-            
-            console.log('Loading Swagger spec from:', specUrl);
-            console.log('Current URL:', window.location.href);
-            
+            // Use the simplified spec for testing
+            const specUrl = window.location.hostname === 'hnagnurtme.github.io' 
+                ? 'https://hnagnurtme.github.io/TicketHive/swagger-simple.json'
+                : './swagger-simple.json';
+                
+            console.log('Loading Swagger UI with spec:', specUrl);
+                
             const ui = SwaggerUIBundle({
                 url: specUrl,
                 dom_id: '#swagger-ui',
@@ -97,20 +89,18 @@
                 showRequestHeaders: true,
                 showCommonExtensions: true,
                 tryItOutEnabled: true,
-                requestInterceptor: function(request) {
-                    // Add any custom headers or modifications here
-                    return request;
-                },
-                responseInterceptor: function(response) {
-                    // Handle responses here
-                    return response;
-                },
                 onComplete: function() {
-                    console.log("Swagger UI loaded successfully");
-                    console.log("Spec URL used:", specUrl);
+                    console.log("✅ Swagger UI loaded successfully with simple spec");
                 },
                 onFailure: function(error) {
-                    console.error("Failed to load Swagger spec:", error);
+                    console.error("❌ Failed to load Swagger spec:", error);
+                    document.getElementById('swagger-ui').innerHTML = 
+                        '<div style="padding: 20px; background: #ffebee; border: 1px solid #f44336; border-radius: 5px; margin: 20px;">' +
+                        '<h3 style="color: #c62828;">❌ Failed to load API specification</h3>' +
+                        '<p><strong>Error:</strong> ' + (error.message || error) + '</p>' +
+                        '<p><strong>Spec URL:</strong> ' + specUrl + '</p>' +
+                        '<p>Please check the browser console for more details.</p>' +
+                        '</div>';
                 },
                 validatorUrl: null
             });

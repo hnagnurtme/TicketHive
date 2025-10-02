@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketHive API - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎫 TicketHive API - Connection Test</h1>
+    
+    <div class="info">
+        <strong>Purpose:</strong> This page tests the connection to the swagger.json file and helps debug any issues.
+    </div>
+    
+    <div>
+        <button onclick="testSwaggerJson()">Test swagger.json</button>
+        <button onclick="testSwaggerUI()">Go to Swagger UI</button>
+        <button onclick="testPaths()">Test All Paths</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function testSwaggerJson() {
+            clearResults();
+            addResult('<strong>Testing swagger.json accessibility...</strong>');
+            
+            const urls = [
+                'https://hnagnurtme.github.io/TicketHive/swagger.json',
+                '/TicketHive/swagger.json',
+                '../swagger.json',
+                './swagger.json'
+            ];
+            
+            for (const url of urls) {
+                try {
+                    addResult(`Testing: ${url}`);
+                    const response = await fetch(url);
+                    
+                    if (response.ok) {
+                        const json = await response.json();
+                        addResult(`✅ SUCCESS: ${url} - Status: ${response.status}`, 'success');
+                        addResult(`OpenAPI Version: ${json.openapi || json.swagger || 'Not found'}`, 'info');
+                        addResult(`Title: ${json.info?.title || 'Not found'}`, 'info');
+                        addResult(`Paths count: ${Object.keys(json.paths || {}).length}`, 'info');
+                        break;
+                    } else {
+                        addResult(`❌ FAILED: ${url} - Status: ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ ERROR: ${url} - ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        function testSwaggerUI() {
+            window.open('./index.html', '_blank');
+        }
+        
+        async function testPaths() {
+            clearResults();
+            addResult('<strong>Testing current environment...</strong>');
+            addResult(`Current URL: ${window.location.href}`, 'info');
+            addResult(`Protocol: ${window.location.protocol}`, 'info');
+            addResult(`Hostname: ${window.location.hostname}`, 'info');
+            addResult(`Pathname: ${window.location.pathname}`, 'info');
+            
+            // Test if we can access local files
+            const paths = [
+                './swagger-ui-bundle.js',
+                './swagger-ui.css',
+                './index.html',
+                '../swagger.json',
+                '../index.html'
+            ];
+            
+            for (const path of paths) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (response.ok) {
+                        addResult(`✅ ${path} - accessible`, 'success');
+                    } else {
+                        addResult(`❌ ${path} - Status: ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ ${path} - ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Auto-run test on page load
+        window.onload = function() {
+            addResult('Page loaded. Click "Test swagger.json" to verify connectivity.', 'info');
+        };
+    </script>
+</body>
+</html>
