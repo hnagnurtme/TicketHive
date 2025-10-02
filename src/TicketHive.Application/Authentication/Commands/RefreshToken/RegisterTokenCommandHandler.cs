@@ -2,7 +2,6 @@ using MediatR;
 using TicketHive.Application.Common.Interfaces.Repositories;
 using TicketHive.Application.Common.Interfaces;
 using ErrorOr;
-using TicketHive.Domain.Entities;
 
 namespace TicketHive.Application.Authentication.Commands.RefreshToken;
 

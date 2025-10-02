@@ -23,9 +23,14 @@ namespace TicketHive.Domain.Entities
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
-        public Event Event { get; private set; } = null!;
+        public Guid CreatedBy { get; private set; }
+        public Guid? UpdatedBy { get; private set; }
 
+        public Event Event { get; private set; } = null!;
         public Inventory Inventory { get; private set; } = null!;
+
+        private readonly List<IDomainEvent> _domainEvents = new();
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         private Ticket() { }
 
@@ -35,6 +40,7 @@ namespace TicketHive.Domain.Entities
             string name,
             decimal price,
             int totalQuantity,
+            Guid createdBy,
             int minPurchase = 1,
             int maxPurchase = 10,
             string? description = null,
@@ -51,6 +57,7 @@ namespace TicketHive.Domain.Entities
             Type = type;
             Name = name;
             Price = price;
+            CreatedBy = createdBy;
             OriginalPrice = originalPrice;
             TotalQuantity = totalQuantity;
             MinPurchase = minPurchase;
@@ -62,40 +69,56 @@ namespace TicketHive.Domain.Entities
             SortOrder = sortOrder;
 
             Inventory = new Inventory(Id, totalQuantity);
+
             AddDomainEvent(new TicketCreatedDomainEvent(Id, eventId, name, price, totalQuantity));
             Touch();
         }
 
-        public void UpdateTicketInfo(
-            string name,
-            string? description,
-            decimal price,
-            decimal? originalPrice,
-            int totalQuantity,
-            int minPurchase,
-            int maxPurchase,
-            DateTime? saleStartTime,
-            DateTime? saleEndTime,
-            bool isActive,
-            int sortOrder)
-        {
-            ValidateTicketData(price, originalPrice, totalQuantity, minPurchase, maxPurchase, saleStartTime, saleEndTime);
+        // === Domain behaviors ===
 
+        public void UpdatePrice(decimal newPrice, Guid updatedBy)
+        {
+            if (newPrice < 0) throw new ArgumentException("Price cannot be negative");
+
+            Price = newPrice;
+            UpdatedBy = updatedBy;
+            Touch();
+        }
+
+        public void ChangeQuantity(int newTotal, Guid updatedBy)
+        {
+            if (newTotal < 0) throw new ArgumentException("Total quantity cannot be negative");
+
+            TotalQuantity = newTotal;
+            Inventory.UpdateTotalQuantity(newTotal);
+            UpdatedBy = updatedBy;
+            Touch();
+        }
+
+        public void UpdateSalePeriod(DateTime? start, DateTime? end, Guid updatedBy)
+        {
+            if (start.HasValue && end.HasValue && end < start)
+                throw new ArgumentException("Sale end time cannot be earlier than start time");
+
+            SaleStartTime = start;
+            SaleEndTime = end;
+            UpdatedBy = updatedBy;
+            Touch();
+        }
+
+        public void UpdateGeneralInfo(string name, string? description, int sortOrder, Guid updatedBy)
+        {
             Name = name;
             Description = description;
-            Price = price;
-            OriginalPrice = originalPrice;
-            TotalQuantity = totalQuantity;
-            MinPurchase = minPurchase;
-            MaxPurchase = maxPurchase;
-            SaleStartTime = saleStartTime;
-            SaleEndTime = saleEndTime;
-            IsActive = isActive;
             SortOrder = sortOrder;
+            UpdatedBy = updatedBy;
+            Touch();
+        }
 
-            // Update inventory stock nếu totalQuantity thay đổi
-            Inventory.UpdateTotalQuantity(totalQuantity);
-
+        public void Deactivate(Guid updatedBy)
+        {
+            IsActive = false;
+            UpdatedBy = updatedBy;
             Touch();
         }
 
@@ -107,11 +130,7 @@ namespace TicketHive.Domain.Entities
                 && Inventory.RemainingQuantity > 0;
         }
 
-        public void Deactivate()
-        {
-            IsActive = false;
-            Touch();
-        }
+        // === Private methods ===
 
         private void Touch() => UpdatedAt = DateTime.UtcNow;
 
@@ -125,7 +144,8 @@ namespace TicketHive.Domain.Entities
             DateTime? saleEndTime)
         {
             if (price < 0) throw new ArgumentException("Price cannot be negative", nameof(price));
-            if (originalPrice.HasValue && originalPrice < price) throw new ArgumentException("Original price cannot be less than current price", nameof(originalPrice));
+            if (originalPrice.HasValue && originalPrice < price)
+                throw new ArgumentException("Original price cannot be less than current price", nameof(originalPrice));
             if (totalQuantity < 0) throw new ArgumentException("Total quantity cannot be negative", nameof(totalQuantity));
             if (minPurchase < 1) throw new ArgumentException("Minimum purchase must be at least 1", nameof(minPurchase));
             if (maxPurchase < minPurchase) throw new ArgumentException("Maximum purchase cannot be less than minimum purchase", nameof(maxPurchase));
@@ -133,14 +153,7 @@ namespace TicketHive.Domain.Entities
                 throw new ArgumentException("Sale end time cannot be earlier than start time");
         }
 
-        private readonly List<IDomainEvent> _domainEvents = new();
-
-        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-
         private void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
-
         public void ClearDomainEvents() => _domainEvents.Clear();
     }
-
-
 }

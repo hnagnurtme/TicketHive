@@ -12,7 +12,7 @@ namespace TicketHive.Api.Controllers;
 
 
 [ApiController]
-// [Authorize(Roles = "ADMIN, ORGANIZER")]
+[Authorize(Roles = "ADMIN, ORGANIZER")]
 [Route("api/tickets")]
 public class TicketController( IMediator mediator, IMapper mapper) : ControllerBase 
 {

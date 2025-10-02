@@ -8,6 +8,6 @@ public class TicketProfile : Profile
     public TicketProfile()
     {
         CreateMap<AddTicketRequest, CreateTicketCommand>();
-        CreateMap<TicketResult , AddTicketResponse>();
+        CreateMap<TicketResult, AddTicketResponse>();
     }
 }
