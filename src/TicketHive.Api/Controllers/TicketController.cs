@@ -101,7 +101,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
         var command = mapper.Map<UpdateTicketCommand>(updateTicketRequest);
-        command = command with { TicketId = id, UpdatedBy = userId };
+        command = command with { TicketId = id};
         
         var result = await mediator.Send(command);
         var response = result.MapTo<TicketDetailResult, UpdateTicketResponse>(mapper);
@@ -121,7 +121,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
     public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
-        var command = new DeleteTicketCommand(id, userId);
+        var command = new DeleteTicketCommand(id);
         var result = await mediator.Send(command);
         var response = result.MapTo<bool, bool>(mapper);
         return OK.HandleResult(response, "Ticket deleted successfully");
@@ -140,7 +140,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
     public async Task<IActionResult> DeactivateTicket([FromRoute] Guid id)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
-        var command = new DeactivateTicketCommand(id, userId);
+        var command = new DeactivateTicketCommand(id);
         var result = await mediator.Send(command);
         var response = result.MapTo<bool, bool>(mapper);
         return OK.HandleResult(response, "Ticket deactivated successfully");

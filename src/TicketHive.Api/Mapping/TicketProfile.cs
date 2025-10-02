@@ -17,11 +17,10 @@ public class TicketProfile : Profile
         CreateMap<TicketResult, TicketSummary>();
         CreateMap<List<TicketResult>, GetTicketsByEventResponse>()
             .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src));
-        
+
         // Update ticket mappings
         CreateMap<UpdateTicketRequest, UpdateTicketCommand>()
-            .ForMember(dest => dest.TicketId, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+            .ForMember(dest => dest.TicketId, opt => opt.Ignore());
         CreateMap<TicketDetailResult, UpdateTicketResponse>();
         
         // Pagination mappings
