@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TicketHive API - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn.primary {
+            background-color: #28a745;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+        .btn.primary:hover {
+            background-color: #1e7e34;
+        }
+        .links {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        ul {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 TicketHive API Documentation</h1>
+        
+        <div class="info">
+            <strong>Note:</strong> This is a landing page for the TicketHive API documentation. Choose one of the options below to view the documentation.
+        </div>
+        
+        <div class="links">
+            <a href="swagger-ui/" class="btn primary">📖 View Swagger UI Documentation</a>
+            <a href="https://github.com/hnagnurtme/TicketHive" class="btn">📦 GitHub Repository</a>
+        </div>
+        
+        <h2>🚀 Quick Links</h2>
+        <ul>
+            <li><strong>API Documentation:</strong> <a href="swagger-ui/">Interactive Swagger UI</a></li>
+            <li><strong>OpenAPI Spec:</strong> <a href="swagger.json">swagger.json</a></li>
+            <li><strong>Source Code:</strong> <a href="https://github.com/hnagnurtme/TicketHive">GitHub Repository</a></li>
+        </ul>
+        
+        <h2>📋 API Endpoints Overview</h2>
+        <ul>
+            <li><code>POST /api/auth/register</code> - Register new user</li>
+            <li><code>POST /api/auth/login</code> - User authentication</li>
+            <li><code>GET /api/events</code> - Get all events</li>
+            <li><code>POST /api/events</code> - Create new event</li>
+            <li><code>GET /api/tickets</code> - Get tickets with pagination</li>
+            <li><code>POST /api/tickets</code> - Create new ticket</li>
+        </ul>
+        
+        <h2>🔐 Authentication</h2>
+        <p>All protected endpoints require a Bearer token:</p>
+        <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto;">
+Authorization: Bearer &lt;your-jwt-token&gt;
+        </pre>
+        
+        <div style="text-align: center; margin-top: 40px; color: #666;">
+            Made with ❤️ by the TicketHive Team
+        </div>
+    </div>
+</body>
+</html>

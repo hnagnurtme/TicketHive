@@ -1,0 +1,42 @@
+# GitHub Pages configuration for TicketHive API Documentation
+
+# Site settings
+title: TicketHive API Documentation
+description: Comprehensive API documentation for TicketHive event ticket management platform
+url: "https://hnagnurtme.github.io"
+baseurl: "/TicketHive"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Include files that start with underscores
+include:
+  - _redirects
+
+# Set the default layout
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# GitHub Pages specific settings
+github_username: hnagnurtme
+repository: TicketHive
+
+# Custom variables
+api_title: "TicketHive API"
+api_version: "v1"
+api_description: "Event ticket management platform API"
