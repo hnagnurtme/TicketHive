@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketHive API - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-links {
+            margin: 20px 0;
+        }
+        .test-links a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .test-links a:hover {
+            background: #0056b3;
+        }
+        .debug {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 TicketHive API - Debug Page</h1>
+        
+        <div class="test-links">
+            <a href="swagger.json" target="_blank">📄 Test swagger.json Direct Access</a>
+            <a href="swagger-ui/">📖 Go to Swagger UI</a>
+            <a href="./">🏠 Back to Home</a>
+        </div>
+        
+        <h2>🔍 Debug Information</h2>
+        <div class="debug" id="debug-info">Loading debug info...</div>
+        
+        <h2>📋 Manual Tests</h2>
+        <ol>
+            <li>Click "Test swagger.json Direct Access" - should show JSON content</li>
+            <li>Click "Go to Swagger UI" - should load Swagger interface</li>
+            <li>Check browser console for any JavaScript errors</li>
+        </ol>
+    </div>
+
+    <script>
+        // Debug information
+        const debugInfo = {
+            currentURL: window.location.href,
+            hostname: window.location.hostname,
+            pathname: window.location.pathname,
+            baseURL: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/'),
+            swaggerJsonURL: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'swagger.json',
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString()
+        };
+        
+        document.getElementById('debug-info').textContent = JSON.stringify(debugInfo, null, 2);
+        
+        // Test swagger.json accessibility
+        fetch(debugInfo.swaggerJsonURL)
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ swagger.json is accessible');
+                    return response.json();
+                } else {
+                    console.error('❌ swagger.json is not accessible:', response.status);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            })
+            .then(data => {
+                console.log('✅ swagger.json parsed successfully');
+                console.log('OpenAPI version:', data.openapi);
+                console.log('API title:', data.info?.title);
+            })
+            .catch(error => {
+                console.error('❌ Error accessing swagger.json:', error);
+                document.getElementById('debug-info').textContent += '\n\n❌ swagger.json Error: ' + error.message;
+            });
+    </script>
+</body>
+</html>

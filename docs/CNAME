@@ -1,2 +1,6 @@
+# Custom domain for GitHub Pages
 # Uncomment the line below if you have a custom domain
 # api-docs.tickethive.com
+
+# Note: If you don't have a custom domain, keep this file empty
+# GitHub Pages will use the default domain: hnagnurtme.github.io/TicketHive

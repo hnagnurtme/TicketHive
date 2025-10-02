@@ -72,8 +72,13 @@
     <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"></script>
     <script>
         window.onload = function() {
+            // Try absolute URL first, fallback to relative
+            const specUrl = window.location.hostname === 'hnagnurtme.github.io' 
+                ? 'https://hnagnurtme.github.io/TicketHive/swagger.json'
+                : '../swagger.json';
+                
             const ui = SwaggerUIBundle({
-                url: '../swagger.json',
+                url: specUrl,
                 dom_id: '#swagger-ui',
                 deepLinking: true,
                 presets: [
@@ -101,6 +106,10 @@
                 },
                 onComplete: function() {
                     console.log("Swagger UI loaded successfully");
+                    console.log("Spec URL used:", specUrl);
+                },
+                onFailure: function(error) {
+                    console.error("Failed to load Swagger spec:", error);
                 },
                 validatorUrl: null
             });
