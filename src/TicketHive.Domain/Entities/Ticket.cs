@@ -32,7 +32,11 @@ namespace TicketHive.Domain.Entities
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-        private Ticket() { }
+        private Ticket() 
+        {
+            Type = string.Empty;
+            Name = string.Empty;
+        }
 
         public Ticket(
             Guid eventId,
