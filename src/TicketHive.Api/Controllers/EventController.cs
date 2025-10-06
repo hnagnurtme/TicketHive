@@ -24,8 +24,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Create a new event with the provided event information."
     )]
     [ProducesResponseType(typeof(ApiResponse<AddEventResponse>), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddEvent([FromBody] AddEventRequest addEventRequest)
     {
         var command = mapper.Map<AddEventCommand>(addEventRequest);
@@ -40,9 +38,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Retrieve detailed information about a specific event."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetEventResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetEvent([FromRoute] Guid id)
     {
         var query = new GetEventByIdQuery(id);
@@ -57,8 +52,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Retrieve all events."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetEventsResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAllEvents()
     {
         var query = new GetAllEventsQuery();
@@ -73,9 +66,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Retrieve events with pagination and filtering options."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetPagedEventsResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetPagedEvents([FromQuery] GetPagedEventsRequest request)
     {
         var query = mapper.Map<GetPagedEventsQuery>(request);
@@ -90,10 +80,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Update an existing event with new information."
     )]
     [ProducesResponseType(typeof(ApiResponse<UpdateEventResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] UpdateEventRequest updateEventRequest)
     {
         var command = mapper.Map<UpdateEventCommand>(updateEventRequest);
@@ -110,10 +96,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Permanently delete an event. Only allowed if no tickets exist."
     )]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteEvent([FromRoute] Guid id)
     {
         var command = new DeleteEventCommand(id);
@@ -128,10 +110,6 @@ public class EventController(IMediator mediator, IMapper mapper) : ControllerBas
         Description = "Publish an event to make it publicly available."
     )]
     [ProducesResponseType(typeof(ApiResponse<EventResponse>), StatusCodes.Status200OK)] 
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PublishEvent([FromBody] PublishEventRequest publishEventRequest)
     {
         var command = mapper.Map<PushlishEventCommand>(publishEventRequest);
