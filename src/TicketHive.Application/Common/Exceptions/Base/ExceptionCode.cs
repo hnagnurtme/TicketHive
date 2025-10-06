@@ -15,6 +15,10 @@ public static class ExceptionCode
     public const string EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
 
     public const string INVALID_PERMISSION = "INVALID_PERMISSION";
+
+    public const string TICKET_NOT_ON_SALE = "TICKET_NOT_ON_SALE";
+
+    public const string INSUFFICIENT_INVENTORY = "INSUFFICIENT_INVENTORY";
 }
 
 

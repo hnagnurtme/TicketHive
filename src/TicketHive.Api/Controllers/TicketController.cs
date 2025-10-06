@@ -24,10 +24,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Create a new ticket with the provided ticket information."
     )]
     [ProducesResponseType(typeof(ApiResponse<AddTicketResponse>), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
     public async Task<IActionResult> AddTicket([FromBody] AddTicketRequest addTicketRequest)
     {
         var command = mapper.Map<CreateTicketCommand>(addTicketRequest);
@@ -42,9 +39,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Retrieve tickets with pagination, filtering, and sorting options."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetTicketsResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
     public async Task<IActionResult> GetTickets([FromQuery] GetTicketsRequest request)
     {
         var query = mapper.Map<GetTicketsQuery>(request);
@@ -59,9 +54,6 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Retrieve detailed information about a specific ticket."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetTicketResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetTicket([FromRoute] Guid id)
     {
         var query = new GetTicketByIdQuery(id);
@@ -76,9 +68,7 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Retrieve all tickets for a specific event."
     )]
     [ProducesResponseType(typeof(ApiResponse<GetTicketsByEventResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
     public async Task<IActionResult> GetTicketsByEvent([FromRoute] Guid eventId)
     {
         var query = new GetTicketsByEventIdQuery(eventId);
@@ -93,13 +83,9 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Update an existing ticket with new information."
     )]
     [ProducesResponseType(typeof(ApiResponse<UpdateTicketResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
     public async Task<IActionResult> UpdateTicket([FromRoute] Guid id, [FromBody] UpdateTicketRequest updateTicketRequest)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
         var command = mapper.Map<UpdateTicketCommand>(updateTicketRequest);
         command = command with { TicketId = id};
         
@@ -114,13 +100,9 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Permanently delete a ticket. Only allowed if no sales exist."
     )]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
     public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
         var command = new DeleteTicketCommand(id);
         var result = await mediator.Send(command);
         var response = result.MapTo<bool, bool>(mapper);
@@ -133,13 +115,9 @@ public class TicketController( IMediator mediator, IMapper mapper) : ControllerB
         Description = "Deactivate a ticket to stop sales while preserving existing data."
     )]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
     public async Task<IActionResult> DeactivateTicket([FromRoute] Guid id)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
         var command = new DeactivateTicketCommand(id);
         var result = await mediator.Send(command);
         var response = result.MapTo<bool, bool>(mapper);
