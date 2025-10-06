@@ -7,6 +7,7 @@
 **TicketHive** is a robust platform for event ticket management, providing secure authentication, user management, and seamless event operations. This API enables integration with TicketHive's core features, supporting both internal and third-party applications.
 
 ## 📖 API Documentation
+[![API Documentation — Swagger screenshot](https://raw.githubusercontent.com/hnagnurtme/TicketHive/main/docs/localhost_5000_swagger_index.html%20(2).png)](https://hnagnurtme.github.io/TicketHive/)
 
 🔗 **[View Live API Documentation](https://hnagnurtme.github.io/TicketHive/)**
 
