@@ -13,15 +13,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
 
         builder.Property(u => u.Email)
-               .IsRequired()
-               .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
         builder.Property(u => u.PasswordHash)
-               .IsRequired();
+                .IsRequired();
 
         builder.HasMany(u => u.RefreshTokens)
-               .WithOne(rt => rt.User)
-               .HasForeignKey(rt => rt.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(rt => rt.User)
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
     }
 }
