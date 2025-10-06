@@ -1,93 +1,97 @@
-# 🎫 TicketHive
+<h1 align="center">🎫 TicketHive</h1>
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
-[![API Documentation](https://img.shields.io/badge/API-Documentation-green.svg)](https://hnagnurtme.github.io/TicketHive/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <i>Booking & Event Management API built with Clean Architecture in ASP.NET Core</i>
+</p>
 
-**TicketHive** is a robust platform for event ticket management, providing secure authentication, user management, and seamless event operations. This API enables integration with TicketHive's core features, supporting both internal and third-party applications.
+<p align="center">
+  <a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"/></a>
+  <a href="https://hnagnurtme.github.io/TicketHive/"><img src="https://img.shields.io/badge/API-Documentation-00C853?style=for-the-badge&logo=swagger&logoColor=white"/></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"/></a>
+</p>
 
-## 📖 API Documentation
+---
 
-[![API Documentation — Swagger screenshot](https://raw.githubusercontent.com/hnagnurtme/TicketHive/master/docs/swagger-screenshot.png)](https://hnagnurtme.github.io/TicketHive/)
+## 🧩 Overview
 
-🔗 **[View Live API Documentation](https://hnagnurtme.github.io/TicketHive/)**
+**TicketHive** is a robust event ticketing API built with **ASP.NET Core (Clean Architecture)**.  
+It provides **secure authentication**, **ticket management**, **VNPay integration**, and **modular microservices-ready architecture**.
 
+> Designed for scalability, reliability, and developer-friendly integrations.
 
-The complete API documentation is available through our interactive Swagger UI, hosted on GitHub Pages. Here you can:
+---
 
-- 📋 Browse all available endpoints
-- 🧪 Test API calls directly in the browser  
-- 📝 View detailed request/response schemas
-- 🔐 Understand authentication requirements
-- 💡 See example requests and responses
-- 📱 Access from any device with responsive design
+## 🧠 Tech Stack
 
-### Documentation Links
+![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white)
+![VNPay](https://img.shields.io/badge/VNPay-0D47A1?style=flat-square)
+![SMTP](https://img.shields.io/badge/SMTP-0078D4?style=flat-square&logo=gmail&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)
+![Unit Test](https://img.shields.io/badge/Unit%20Test-6DB33F?style=flat-square&logo=pytest&logoColor=white)
 
-| Resource | URL | Description |
-|----------|-----|-------------|
-| 🏠 **Main Documentation** | [GitHub Pages](https://hnagnurtme.github.io/TicketHive/) | Complete API overview and getting started guide |
-| 📖 **Interactive API Docs** | [Swagger UI](https://hnagnurtme.github.io/TicketHive/swagger-ui/) | Interactive API testing interface |
-| 📄 **OpenAPI Specification** | [swagger.json](https://hnagnurtme.github.io/TicketHive/swagger.json) | Raw OpenAPI 3.0 specification |
-| 🧪 **Demo Page** | [Demo](https://hnagnurtme.github.io/TicketHive/demo.html) | Quick access page with links |
-
-### Quick Links
-
-- **Authentication**: `POST /api/auth/login` - User authentication
-- **Events**: `GET /api/events` - Retrieve all events
-- **Tickets**: `GET /api/tickets` - Retrieve tickets with pagination
-- **Users**: `GET /api/users/profile/{userId}` - Get user profile
+---
 
 ## 🚀 Features
 
 ### 🔐 Authentication & Security
-- JWT-based authentication
-- Email verification system
-- Refresh token mechanism
-- Secure password handling
+- JWT-based authentication with refresh tokens  
+- Email verification and password reset  
+- Secure role-based authorization  
 
-### 🎪 Event Management
-- Create and manage events
-- Event publishing system
-- Pagination and filtering
-- Event status tracking
+### 🎟️ Ticket & Event Management
+- Create, update, publish, and filter events  
+- Dynamic ticket lifecycle (activate, deactivate)  
+- Real-time event status & analytics  
 
-### 🎟️ Ticket Management
-- Comprehensive ticket operations
-- Ticket activation/deactivation
-- Event-specific ticket retrieval
-- Advanced filtering and sorting
+### 💳 Payment Integration
+- Seamless checkout via **VNPay API**  
+- Transaction logging and verification  
 
-### 👤 User Management
-- User profile management
-- Secure registration process
-- Profile updates and maintenance
+### ⚙️ System Design
+- Clean Architecture (Domain, Application, Infrastructure, API)  
+- Caching with Redis  
+- Async messaging via RabbitMQ  
+- Unit testing and CI-ready structure  
 
-## 🛠️ Technology Stack
+---
 
-- **Framework**: .NET 8.0
-- **Architecture**: Clean Architecture
-- **Database**: Entity Framework Core
-- **Authentication**: JWT
-- **Documentation**: OpenAPI/Swagger
-- **Testing**: xUnit
-- **Containerization**: Docker
+## 📖 API Documentation
 
-## 📁 Project Structure
+[![Swagger Screenshot](https://raw.githubusercontent.com/hnagnurtme/TicketHive/master/docs/swagger-screenshot.png)](https://hnagnurtme.github.io/TicketHive/)
 
-```
+🔗 **[View Live API Documentation](https://hnagnurtme.github.io/TicketHive/)**
+
+| Resource | URL | Description |
+|----------|-----|-------------|
+| 🏠 **Main Docs** | [GitHub Pages](https://hnagnurtme.github.io/TicketHive/) | Complete API overview |
+| 🧪 **Swagger UI** | [Swagger UI](https://hnagnurtme.github.io/TicketHive/swagger-ui/) | Interactive testing interface |
+| 📄 **OpenAPI Spec** | [swagger.json](https://hnagnurtme.github.io/TicketHive/swagger.json) | Raw OpenAPI file |
+| 💡 **Demo Page** | [Demo](https://hnagnurtme.github.io/TicketHive/demo.html) | Example endpoints |
+
+---
+
+## 🏗️ Project Structure
+
+```bash
 TicketHive/
 ├── src/
-│   ├── TicketHive.Api/          # Web API layer
-│   ├── TicketHive.Application/  # Application business logic
-│   ├── TicketHive.Domain/       # Domain entities and rules
-│   └── TicketHive.Infrastructure/ # Data access and external services
+│   ├── TicketHive.Api/              # API Layer (Controllers, Middleware)
+│   ├── TicketHive.Application/      # Core Business Logic
+│   ├── TicketHive.Domain/           # Entities, Enums, and Rules
+│   └── TicketHive.Infrastructure/   # Database, Repositories, Integrations
+│
 ├── tests/
-│   └── TicketHive.Tests/        # Unit and integration tests
+│   └── TicketHive.Tests/            # Unit and Integration Tests
+│
 ├── docs/
-│   ├── swagger.json             # OpenAPI specification
-│   └── swagger-ui/              # Swagger UI documentation
-└── docker-compose.yml           # Docker configuration
+│   ├── swagger.json                 # OpenAPI Specification
+│   └── swagger-ui/                  # Swagger UI Static Files
+│
+└── docker-compose.yml               # Docker Setup
+
 ```
 
 ## 🏗️ Getting Started
