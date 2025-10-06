@@ -13,6 +13,9 @@ using TicketHive.Application.Common.Interfaces.Events;
 using TicketHive.Infrastructure.Events;
 using TicketHive.Infrastructure.ExternalServices;
 using TicketHive.Infrastructure.Identity;
+using TicketHive.Application.Common.Interfaces.Payment;
+using TicketHive.Infrastructure.Payment;
+using TicketHive.Infrastructure.Payment.Adapters;
 
 namespace TicketHive.Infrastructure;
 
@@ -26,6 +29,8 @@ public static class DependencyInjection
             .AddSecurity(configuration);
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         services.AddScoped<IEmailSender, EmailSenderService>();
+        services.AddScoped<IPaymentService, PaymentService>(); 
+        services.AddScoped<IPaymentAdapter,VnPayAdapter  >();   
         return services;
     }
 
@@ -47,6 +52,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         return services;

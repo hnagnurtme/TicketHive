@@ -13,41 +13,41 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Name)
-               .IsRequired()
-               .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
         builder.Property(t => t.Price)
-               .IsRequired()
-               .HasColumnType("decimal(18,2)");
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
 
         builder.Property(t => t.TotalQuantity)
-               .IsRequired();
+                .IsRequired();
 
         builder.Property(t => t.MinPurchase)
-               .IsRequired();
+                .IsRequired();
 
         builder.Property(t => t.MaxPurchase)
-               .IsRequired();
+                .IsRequired();
 
         builder.Property(t => t.Description)
-               .HasMaxLength(1000);
+                .HasMaxLength(1000);
 
         builder.Property(t => t.OriginalPrice)
-               .HasColumnType("decimal(18,2)");
+                .HasColumnType("decimal(18,2)");
 
         builder.Property(t => t.SaleStartTime);
 
         builder.Property(t => t.SaleEndTime);
 
         builder.Property(t => t.IsActive)
-               .IsRequired();
+                .IsRequired();
 
         builder.Property(t => t.SortOrder)
-               .IsRequired();
+                .IsRequired();
 
         builder.HasOne(t => t.Event)
-               .WithMany()
-               .HasForeignKey(t => t.EventId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(t => t.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
     }
 }

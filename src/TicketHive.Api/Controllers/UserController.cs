@@ -25,8 +25,7 @@ public class UserController(IMediator mediator, IMapper mapper) : ControllerBase
         Summary = "Get User Profile",
         Description = "Get the profile information of the authenticated user."
     )]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<UserProfileResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProfile([FromRoute] string userId)
     {
         var query = new GetUserProfileQuery(userId);
@@ -41,9 +40,7 @@ public class UserController(IMediator mediator, IMapper mapper) : ControllerBase
         Summary = "Update User Profile",
         Description = "Update the profile information of the authenticated user."
     )]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse<UpdateUserProfileResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateProfile([FromRoute] string userId, [FromBody] UpdateUserProfileRequest request)
     {
         var command = mapper.Map<UpdateUserProfileCommand>(request);

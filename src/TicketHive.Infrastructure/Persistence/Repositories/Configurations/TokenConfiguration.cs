@@ -13,21 +13,21 @@ public class TokenConfiguration : IEntityTypeConfiguration<RefreshToken>
         builder.HasKey(rt => rt.Id);
 
         builder.Property(rt => rt.TokenHash)
-               .IsRequired()
-               .HasMaxLength(512);
+                .IsRequired()
+                .HasMaxLength(512);
 
         builder.Property(rt => rt.ExpiresAt)
-               .IsRequired();
+                .IsRequired();
 
         builder.Property(rt => rt.CreatedAt)
-               .IsRequired();
+                .IsRequired();
         builder.HasOne(rt => rt.User)
-               .WithMany(u => u.RefreshTokens)
-               .HasForeignKey(rt => rt.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(u => u.RefreshTokens)
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(rt => rt.ReplacedByToken)
-               .WithMany()
-               .HasForeignKey(rt => rt.ReplacedByTokenId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .WithMany()
+                .HasForeignKey(rt => rt.ReplacedByTokenId)
+                .OnDelete(DeleteBehavior.Restrict);
     }
 }
