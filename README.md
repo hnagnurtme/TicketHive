@@ -1,106 +1,92 @@
-<h1 align="center">🎫 TicketHive</h1>
+# TicketHive - Event Ticket Management API
 
-<p align="center">
-  <i>Booking & Event Management API built with Clean Architecture in ASP.NET Core</i>
-</p>
+[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Architecture](https://img.shields.io/badge/Clean%20Architecture-Pattern-orange.svg)](https://github.com/jasontaylordev/CleanArchitecture)
+[![VNPay](https://img.shields.io/badge/Payment-VNPay-0A8A3A.svg?logo=cashapp&logoColor=white)](https://vnpay.vn/)
+[![API Documentation](https://img.shields.io/badge/API-Documentation-green.svg)](https://hnagnurtme.github.io/TicketHive/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<p align="center">
-  <a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"/></a>
-  <a href="https://hnagnurtme.github.io/TicketHive/"><img src="https://img.shields.io/badge/API-Documentation-00C853?style=for-the-badge&logo=swagger&logoColor=white"/></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"/></a>
-</p>
+> A robust platform for event ticket management with secure authentication, user management, and seamless event operations.
 
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Using Docker](#using-docker)
+- [API Usage](#-api-usage)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+##  Features
+
+- **🔐 Authentication & Security** - JWT-based authentication with email verification and refresh tokens
+- **🎪 Event Management** - Complete CRUD operations with publishing system and status tracking
+- **🎟️ Ticket Management** - Advanced ticket operations with filtering, sorting, and pagination
+- **👤 User Management** - Secure registration and profile management
+- **💳 Payment Integration** - VNPay payment gateway integration
+- **📖 Interactive API Docs** - Comprehensive Swagger UI documentation
+
+## API Documentation
+***Swagger UI:*** [http://localhost:5043/swagger/index.html](http://localhost:5043/swagger/index.html)
+
+![Login](docs/image/login.png)
+
+**1. Access Swagger UI**  
+
+Link: [http://localhost:5043/swagger/index.html](http://localhost:5043/swagger/index.html)
+
+**2. Log in to obtain a token**  
+> Login interface. Enter **username** and **password** → receive **JWT token**.
+
+![Login](docs/image/login.png)
+
+**3. Enter the token in Swagger**  
+> Click **"Authorize"** → enter `Bearer <token>` → confirm.
+
+![Bearer Token Input](docs/image/auth.png)
+
+**4. Use the APIs**  
+> You can now call protected endpoints.
 ---
+## Technology Stack
 
-## 🧩 Overview
+- **.NET 8.0** - Modern, high-performance framework
+- **Clean Architecture** - Maintainable and testable design
+- **Entity Framework Core** - Powerful ORM for database operations
+- **PostgreSQL** - Robust relational database
+- **JWT Authentication** - Secure token-based authentication
+- **Swagger/OpenAPI** - Interactive API documentation
+- **xUnit** - Comprehensive testing framework
+- **Docker** - Containerization support
 
-**TicketHive** is a robust event ticketing API built with **ASP.NET Core (Clean Architecture)**.  
-It provides **secure authentication**, **ticket management**, **VNPay integration**, and **modular microservices-ready architecture**.
-
-> Designed for scalability, reliability, and developer-friendly integrations.
-
----
-
-## 🧠 Tech Stack
-
-![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat-square&logo=dotnet&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white)
-![VNPay](https://img.shields.io/badge/VNPay-0D47A1?style=flat-square)
-![SMTP](https://img.shields.io/badge/SMTP-0078D4?style=flat-square&logo=gmail&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)
-![Unit Test](https://img.shields.io/badge/Unit%20Test-6DB33F?style=flat-square&logo=pytest&logoColor=white)
-
----
-
-## 🚀 Features
-
-### 🔐 Authentication & Security
-- JWT-based authentication with refresh tokens  
-- Email verification and password reset  
-- Secure role-based authorization  
-
-### 🎟️ Ticket & Event Management
-- Create, update, publish, and filter events  
-- Dynamic ticket lifecycle (activate, deactivate)  
-- Real-time event status & analytics  
-
-### 💳 Payment Integration
-- Seamless checkout via **VNPay API**  
-- Transaction logging and verification  
-
-### ⚙️ System Design
-- Clean Architecture (Domain, Application, Infrastructure, API)  
-- Caching with Redis  
-- Async messaging via RabbitMQ  
-- Unit testing and CI-ready structure  
-
----
-
-## 📖 API Documentation
-
-[![Swagger Screenshot](https://raw.githubusercontent.com/hnagnurtme/TicketHive/master/docs/swagger-screenshot.png)](https://hnagnurtme.github.io/TicketHive/)
-
-🔗 **[View Live API Documentation](https://hnagnurtme.github.io/TicketHive/)**
-
-| Resource | URL | Description |
-|----------|-----|-------------|
-| 🏠 **Main Docs** | [GitHub Pages](https://hnagnurtme.github.io/TicketHive/) | Complete API overview |
-| 🧪 **Swagger UI** | [Swagger UI](https://hnagnurtme.github.io/TicketHive/swagger-ui/) | Interactive testing interface |
-| 📄 **OpenAPI Spec** | [swagger.json](https://hnagnurtme.github.io/TicketHive/swagger.json) | Raw OpenAPI file |
-| 💡 **Demo Page** | [Demo](https://hnagnurtme.github.io/TicketHive/demo.html) | Example endpoints |
-
----
-
-## 🏗️ Project Structure
-
-```bash
-TicketHive/
-├── src/
-│   ├── TicketHive.Api/              # API Layer (Controllers, Middleware)
-│   ├── TicketHive.Application/      # Core Business Logic
-│   ├── TicketHive.Domain/           # Entities, Enums, and Rules
-│   └── TicketHive.Infrastructure/   # Database, Repositories, Integrations
-│
-├── tests/
-│   └── TicketHive.Tests/            # Unit and Integration Tests
-│
-├── docs/
-│   ├── swagger.json                 # OpenAPI Specification
-│   └── swagger-ui/                  # Swagger UI Static Files
-│
-└── docker-compose.yml               # Docker Setup
+## 📁 Project Structure
 
 ```
+TicketHive/
+├── src/
+│   ├── TicketHive.Api/              # Web API layer
+│   ├── TicketHive.Application/      # Business logic
+│   ├── TicketHive.Domain/           # Domain entities
+│   └── TicketHive.Infrastructure/   # Data access
+├── tests/
+│   └── TicketHive.Tests/            # Unit & integration tests
+├── docs/                            # API documentation
+└── docker-compose.yml               # Docker configuration
+```
 
-## 🏗️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [PostgreSQL](https://www.postgresql.org/) or SQL Server
 - [Docker](https://www.docker.com/) (optional)
-- SQL Server or compatible database
 
 ### Installation
 
@@ -115,11 +101,18 @@ TicketHive/
    dotnet restore
    ```
 
-3. **Update database connection string**
+3. **Configure database**
    
-   Edit `src/TicketHive.Api/appsettings.json` with your database connection string.
+   Update `src/TicketHive.Api/appsettings.json`:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "your-connection-string"
+     }
+   }
+   ```
 
-4. **Run database migrations**
+4. **Apply migrations**
    ```bash
    dotnet ef database update --project src/TicketHive.Infrastructure
    ```
@@ -129,47 +122,64 @@ TicketHive/
    dotnet run --project src/TicketHive.Api
    ```
 
+   The API will be available at:
+   - HTTPS: `https://localhost:7043`
+   - HTTP: `http://localhost:5043`
+
 ### Using Docker
 
 ```bash
 docker-compose up -d
 ```
 
-The API will be available at `https://localhost:7043` or `http://localhost:5043`.
+##  API Usage
 
-## 🧪 Testing
+All protected endpoints require a Bearer token:
 
-Run the test suite:
+```http
+Authorization: Bearer <your-jwt-token>
+```
 
+**Example Request:**
+```bash
+curl -X GET "https://localhost:7043/api/events" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+## Testing
+
+Run all tests:
 ```bash
 dotnet test
 ```
 
-Generate test coverage report:
-
+Generate coverage report:
 ```bash
 ./Test.sh
 ```
 
+## Contributing
 
-### Authentication
-
-All protected endpoints require a Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <your-jwt-token>
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and commit: `git commit -m 'Add amazing feature'`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-## 📄 License
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**[Documentation](https://hnagnurtme.github.io/TicketHive/)** • **[Report Bug](https://github.com/hnagnurtme/TicketHive/issues)** • **[Request Feature](https://github.com/hnagnurtme/TicketHive/issues)**
+
+Made with ❤️ by [hnagnurtme](https://github.com/hnagnurtme)
+
+</div>
