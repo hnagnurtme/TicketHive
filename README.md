@@ -25,17 +25,15 @@
 
 ##  Features
 
-- **🔐 Authentication & Security** - JWT-based authentication with email verification and refresh tokens
-- **🎪 Event Management** - Complete CRUD operations with publishing system and status tracking
-- **🎟️ Ticket Management** - Advanced ticket operations with filtering, sorting, and pagination
-- **👤 User Management** - Secure registration and profile management
-- **💳 Payment Integration** - VNPay payment gateway integration
-- **📖 Interactive API Docs** - Comprehensive Swagger UI documentation
+- **Authentication & Security** - JWT-based authentication with email verification and refresh tokens
+- **Event Management** - Complete CRUD operations with publishing system and status tracking
+- **Ticket Management** - Advanced ticket operations with filtering, sorting, and pagination
+- **User Management** - Secure registration and profile management
+- **Payment Integration** - VNPay payment gateway integration
+- **Interactive API Docs** - Comprehensive Swagger UI documentation
 
 ## API Documentation
 ***Swagger UI:*** [http://localhost:5043/swagger/index.html](http://localhost:5043/swagger/index.html)
-
-![Login](docs/image/login.png)
 
 **1. Access Swagger UI**  
 
