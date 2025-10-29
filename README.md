@@ -1,99 +1,92 @@
-# 🎫 TicketHive
+# TicketHive - Event Ticket Management API
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Architecture](https://img.shields.io/badge/Clean%20Architecture-Pattern-orange.svg)](https://github.com/jasontaylordev/CleanArchitecture)
+[![VNPay](https://img.shields.io/badge/Payment-VNPay-0A8A3A.svg?logo=cashapp&logoColor=white)](https://vnpay.vn/)
 [![API Documentation](https://img.shields.io/badge/API-Documentation-green.svg)](https://hnagnurtme.github.io/TicketHive/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**TicketHive** is a robust platform for event ticket management, providing secure authentication, user management, and seamless event operations. This API enables integration with TicketHive's core features, supporting both internal and third-party applications.
+> A robust platform for event ticket management with secure authentication, user management, and seamless event operations.
 
-## 📖 API Documentation
+## 📑 Table of Contents
 
-🔗 **[View Live API Documentation](https://hnagnurtme.github.io/TicketHive/)**
+- [Features](#-features)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Using Docker](#using-docker)
+- [API Usage](#-api-usage)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-The complete API documentation is available through our interactive Swagger UI, hosted on GitHub Pages. Here you can:
+##  Features
 
-- 📋 Browse all available endpoints
-- 🧪 Test API calls directly in the browser  
-- 📝 View detailed request/response schemas
-- 🔐 Understand authentication requirements
-- 💡 See example requests and responses
-- 📱 Access from any device with responsive design
+- **🔐 Authentication & Security** - JWT-based authentication with email verification and refresh tokens
+- **🎪 Event Management** - Complete CRUD operations with publishing system and status tracking
+- **🎟️ Ticket Management** - Advanced ticket operations with filtering, sorting, and pagination
+- **👤 User Management** - Secure registration and profile management
+- **💳 Payment Integration** - VNPay payment gateway integration
+- **📖 Interactive API Docs** - Comprehensive Swagger UI documentation
 
-### Documentation Links
+## API Documentation
+***Swagger UI:*** [http://localhost:5043/swagger/index.html](http://localhost:5043/swagger/index.html)
 
-| Resource | URL | Description |
-|----------|-----|-------------|
-| 🏠 **Main Documentation** | [GitHub Pages](https://hnagnurtme.github.io/TicketHive/) | Complete API overview and getting started guide |
-| 📖 **Interactive API Docs** | [Swagger UI](https://hnagnurtme.github.io/TicketHive/swagger-ui/) | Interactive API testing interface |
-| 📄 **OpenAPI Specification** | [swagger.json](https://hnagnurtme.github.io/TicketHive/swagger.json) | Raw OpenAPI 3.0 specification |
-| 🧪 **Demo Page** | [Demo](https://hnagnurtme.github.io/TicketHive/demo.html) | Quick access page with links |
+![Login](docs/image/login.png)
 
-### Quick Links
+**1. Access Swagger UI**  
 
-- **Authentication**: `POST /api/auth/login` - User authentication
-- **Events**: `GET /api/events` - Retrieve all events
-- **Tickets**: `GET /api/tickets` - Retrieve tickets with pagination
-- **Users**: `GET /api/users/profile/{userId}` - Get user profile
+Link: [http://localhost:5043/swagger/index.html](http://localhost:5043/swagger/index.html)
 
-## 🚀 Features
+**2. Log in to obtain a token**  
+> Login interface. Enter **username** and **password** → receive **JWT token**.
 
-### 🔐 Authentication & Security
-- JWT-based authentication
-- Email verification system
-- Refresh token mechanism
-- Secure password handling
+![Login](docs/image/login.png)
 
-### 🎪 Event Management
-- Create and manage events
-- Event publishing system
-- Pagination and filtering
-- Event status tracking
+**3. Enter the token in Swagger**  
+> Click **"Authorize"** → enter `Bearer <token>` → confirm.
 
-### 🎟️ Ticket Management
-- Comprehensive ticket operations
-- Ticket activation/deactivation
-- Event-specific ticket retrieval
-- Advanced filtering and sorting
+![Bearer Token Input](docs/image/auth.png)
 
-### 👤 User Management
-- User profile management
-- Secure registration process
-- Profile updates and maintenance
+**4. Use the APIs**  
+> You can now call protected endpoints.
+---
+## Technology Stack
 
-## 🛠️ Technology Stack
-
-- **Framework**: .NET 8.0
-- **Architecture**: Clean Architecture
-- **Database**: Entity Framework Core
-- **Authentication**: JWT
-- **Documentation**: OpenAPI/Swagger
-- **Testing**: xUnit
-- **Containerization**: Docker
+- **.NET 8.0** - Modern, high-performance framework
+- **Clean Architecture** - Maintainable and testable design
+- **Entity Framework Core** - Powerful ORM for database operations
+- **PostgreSQL** - Robust relational database
+- **JWT Authentication** - Secure token-based authentication
+- **Swagger/OpenAPI** - Interactive API documentation
+- **xUnit** - Comprehensive testing framework
+- **Docker** - Containerization support
 
 ## 📁 Project Structure
 
 ```
 TicketHive/
 ├── src/
-│   ├── TicketHive.Api/          # Web API layer
-│   ├── TicketHive.Application/  # Application business logic
-│   ├── TicketHive.Domain/       # Domain entities and rules
-│   └── TicketHive.Infrastructure/ # Data access and external services
+│   ├── TicketHive.Api/              # Web API layer
+│   ├── TicketHive.Application/      # Business logic
+│   ├── TicketHive.Domain/           # Domain entities
+│   └── TicketHive.Infrastructure/   # Data access
 ├── tests/
-│   └── TicketHive.Tests/        # Unit and integration tests
-├── docs/
-│   ├── swagger.json             # OpenAPI specification
-│   └── swagger-ui/              # Swagger UI documentation
-└── docker-compose.yml           # Docker configuration
+│   └── TicketHive.Tests/            # Unit & integration tests
+├── docs/                            # API documentation
+└── docker-compose.yml               # Docker configuration
 ```
 
-## 🏗️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [PostgreSQL](https://www.postgresql.org/) or SQL Server
 - [Docker](https://www.docker.com/) (optional)
-- SQL Server or compatible database
 
 ### Installation
 
@@ -108,11 +101,18 @@ TicketHive/
    dotnet restore
    ```
 
-3. **Update database connection string**
+3. **Configure database**
    
-   Edit `src/TicketHive.Api/appsettings.json` with your database connection string.
+   Update `src/TicketHive.Api/appsettings.json`:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "your-connection-string"
+     }
+   }
+   ```
 
-4. **Run database migrations**
+4. **Apply migrations**
    ```bash
    dotnet ef database update --project src/TicketHive.Infrastructure
    ```
@@ -122,47 +122,64 @@ TicketHive/
    dotnet run --project src/TicketHive.Api
    ```
 
+   The API will be available at:
+   - HTTPS: `https://localhost:7043`
+   - HTTP: `http://localhost:5043`
+
 ### Using Docker
 
 ```bash
 docker-compose up -d
 ```
 
-The API will be available at `https://localhost:7043` or `http://localhost:5043`.
+##  API Usage
 
-## 🧪 Testing
+All protected endpoints require a Bearer token:
 
-Run the test suite:
+```http
+Authorization: Bearer <your-jwt-token>
+```
 
+**Example Request:**
+```bash
+curl -X GET "https://localhost:7043/api/events" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+## Testing
+
+Run all tests:
 ```bash
 dotnet test
 ```
 
-Generate test coverage report:
-
+Generate coverage report:
 ```bash
 ./Test.sh
 ```
 
+## Contributing
 
-### Authentication
-
-All protected endpoints require a Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <your-jwt-token>
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and commit: `git commit -m 'Add amazing feature'`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-## 📄 License
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**[Documentation](https://hnagnurtme.github.io/TicketHive/)** • **[Report Bug](https://github.com/hnagnurtme/TicketHive/issues)** • **[Request Feature](https://github.com/hnagnurtme/TicketHive/issues)**
+
+Made with ❤️ by [hnagnurtme](https://github.com/hnagnurtme)
+
+</div>

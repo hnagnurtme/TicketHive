@@ -42,8 +42,6 @@ public class PaymentService : IPaymentService
     {
         var adapter = GetAdapter(provider);
         
-        // Gọi phương thức Verify của Adapter cụ thể (ví dụ: MomoAdapter.VerifyWebhook)
-        // Đây là nơi logic xác thực chữ ký của cổng thanh toán xảy ra.
         return Task.FromResult(adapter.VerifyWebhook(requestData));
     }
 }
